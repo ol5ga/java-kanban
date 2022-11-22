@@ -6,27 +6,21 @@ public class Task {
     protected String status;
     protected String description;
 
-
-    public Task (int id, String name, String description, String status) {
-        this.id = id;
+    public Task (String name, String description) {
         this.name = name;
-        this.status = status;
+        this.status = "NEW";
         this.description = description;
-    }
-
-    public Task (String name, String description, String status) {
-        this.name = name;
-        this.status = status;
-        this.description = description;
-    }
-
-    public boolean isEpic() {
-        return false;
     }
 
     public void setId(int id) {
+
         this.id = id;
     }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 
 
     @Override
