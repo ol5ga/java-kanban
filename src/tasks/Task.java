@@ -1,3 +1,4 @@
+package tasks;
 import java.util.Objects;
 
 public class Task {
@@ -12,16 +13,45 @@ public class Task {
         this.description = description;
     }
 
+    public Task (int id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.status = "NEW";
+        this.description = description;
+    }
+
     public void setId(int id) {
 
         this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setStatus(String status) {
         this.status = status;
     }
 
+    public int getId() {
+        return id;
+    }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -33,20 +63,8 @@ public class Task {
 
     @Override
     public int hashCode() {
-        int hash = 17;
-        if (name != null){
-            hash = hash + name.hashCode();
-        }
-        hash = 31;
-        if (status != null){
-            hash = hash + status.hashCode();
-        }
-        hash = 11;
-        if (description != null){
-            hash = hash + description.hashCode();
-        } return hash;
+        return Objects.hash(id, name, status, description);
     }
-
 
     @Override
     public String toString() {

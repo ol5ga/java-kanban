@@ -1,4 +1,7 @@
-import java.util.HashMap;
+import manager.TaskManager;
+import tasks.Epic;
+import tasks.Task;
+import tasks.Subtask;
 
 public class Main {
 
@@ -8,8 +11,8 @@ public class Main {
     TaskManager manager = new TaskManager();
 
 
-/*
-    Epic epic1 = new Epic("Epic 1", "epic-description 1");
+
+   /* Epic epic1 = new Epic("Epic 1", "epic-description 1");
     int epic1Id = manager.addNewEpic(epic1);
 
 
@@ -22,7 +25,7 @@ public class Main {
         int subtask3Id = manager.addNewSubtask(subtask3);
         subtask1.setStatus("NEW");
         subtask2.setStatus("NEW");
-        subtask3.setStatus("NEW");
+        subtask3.setStatus("DONE");
 
     Task task1 = new Task("Task 1", "description 1");
     Task task2 = new Task("Task 2", "description 2");
@@ -53,11 +56,11 @@ public class Main {
     System.out.println(task1Id);
     System.out.println(task2Id);
     manager.deleteAllTasks();
-    Task task2New = new Task(2,"Task 2","description 2", "DONE");
-    manager.updateTask(task2New);
+    //Task task2New = new Task(2,"Task 2","description 2", "DONE");
+    //manager.updateTask(task2New);
     System.out.println(manager.getTask(2));
     manager.deleteTask(1);
-    */
+*/
 
     }
 
