@@ -19,12 +19,12 @@ public class Main {
     Subtask subtask1 = new Subtask("Subtask 1", "sub-description 1", 1);
     Subtask subtask2 = new Subtask("Subtask 2", "sub-description 2", 1);
     Subtask subtask3 = new Subtask("Subtask 3","sub-description 2", 1);
-    //Subtask subtask2N = new Subtask("Subtask 2n", "sub-description 2n", 1);
+    Subtask subtask2N = new Subtask("Subtask 2n", "sub-description 2n", 1);
         int subtask1Id = manager.addNewSubtask(subtask1);
         int subtask2Id = manager.addNewSubtask(subtask2);
         int subtask3Id = manager.addNewSubtask(subtask3);
         subtask1.setStatus("NEW");
-        subtask2.setStatus("NEW");
+        subtask2.setStatus("DONE");
         subtask3.setStatus("DONE");
 
     Task task1 = new Task("Task 1", "description 1");
@@ -34,10 +34,10 @@ public class Main {
     task1.setStatus("NEW");
     task2.setStatus("IN_PROGRESS");
 
-    System.out.println(manager.getEpics());
-    System.out.println(manager.getSubtasks());
+    System.out.println(manager.getAllEpics());
+    System.out.println(manager.getAllSubtasks());
     System.out.println(manager.getAllTasks());
-
+     manager.deleteAllSubtasks();
     Subtask subtask2N = new Subtask("Subtask 2n", "sub-description 2n", 1);
     subtask2.setStatus("IN_PROGRESS");
     manager.deleteSubtask(3);
@@ -50,18 +50,18 @@ public class Main {
     System.out.println(manager.getEpics());
     epic1.setStatus("New");
 
-    manager.getEpicStatus(epic1);
-
+    manager.updateEpicStatus(epic1);
+    System.out.println(manager.getAllEpics());
 
     System.out.println(task1Id);
     System.out.println(task2Id);
     manager.deleteAllTasks();
-    //Task task2New = new Task(2,"Task 2","description 2", "DONE");
-    //manager.updateTask(task2New);
+    Task task2New = new Task(6,"Task 2N","description 2N");
+    manager.updateTask(task2New);
     System.out.println(manager.getTask(2));
     manager.deleteTask(1);
+    System.out.println(manager.getAllTasks());
 */
-
     }
 
 

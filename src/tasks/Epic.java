@@ -11,8 +11,9 @@ public class Epic extends Task {
         super(name, description);
     }
 
-    public Epic(int id, String name, String description) {
+    public Epic(int id, String name, String description, String status) {
         super(id, name, description);
+        this.status = "NEW";
     }
 
     public ArrayList<Integer> getSubtaskId(){
@@ -27,7 +28,7 @@ public class Epic extends Task {
         subtaskIds.clear();
     }
 
-    public void removeSubtask(int id){
+    public void removeSubtask(Integer id){
         subtaskIds.remove(id);
     }
 
