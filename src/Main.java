@@ -15,14 +15,16 @@ public class Main {
     TaskManager manager = Managers.getDefault();
 
 
-
-   /* Epic epic1 = new Epic("Epic 1", "epic-description 1");
+/*
+    Epic epic1 = new Epic("Epic 1", "epic-description 1");
     int epic1Id = manager.addNewEpic(epic1);
+        Epic epic2 = new Epic("Epic 2", "epic-description 2");
+        int epic2Id = manager.addNewEpic(epic1);
 
 
    Subtask subtask1 = new Subtask("Subtask 1", "sub-description 1", 1);
-   Subtask subtask2 = new Subtask("Subtask 2", "sub-description 2", 1);
-   Subtask subtask3 = new Subtask("Subtask 3","sub-description 2", 1);
+   Subtask subtask2 = new Subtask("Subtask 2", "sub-description 2", 2);
+   Subtask subtask3 = new Subtask("Subtask 3","sub-description 3", 1);
    Subtask subtask2N = new Subtask("Subtask 2n", "sub-description 2n", 1);
        int subtask1Id = manager.addNewSubtask(subtask1);
        int subtask2Id = manager.addNewSubtask(subtask2);
@@ -30,6 +32,8 @@ public class Main {
        subtask1.setStatus(TaskStatus.DONE);
        subtask2.setStatus(TaskStatus.DONE);
        subtask3.setStatus(TaskStatus.DONE);
+
+       System.out.println(manager.getEpicSubtasks(1));
 
     Task task1 = new Task("Task 1", "description 1");
     Task task2 = new Task("Task 2", "description 2");
