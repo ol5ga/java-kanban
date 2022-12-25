@@ -53,7 +53,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTask(int id){
+
         tasks.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
@@ -101,13 +103,20 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteEpic(int id){
-        Epic epic = getEpic(id);
-        ArrayList <Integer> subs = epic.getSubtaskId();
+        Epic epic = epics.get(id);
+        List<Integer> subs = epic.getSubtaskId();
+        List<Integer> epicsSubs = new ArrayList<>();
         for (Integer subId : subs) {
+            epicsSubs.add(subId);
+        }
+        for (Integer subId : epicsSubs) {
             deleteSubtask(subId);
         }
+        historyManager.remove(id);
         epics.remove(id);
+
     }
+
     @Override
     public TaskStatus updateEpicStatus(Epic epic){
         ArrayList <Integer> subs = epic.getSubtaskId();
@@ -115,9 +124,9 @@ public class InMemoryTaskManager implements TaskManager {
         if (subs.isEmpty()){
             return epic.getStatus();
         } else {
-            Subtask first = getSubtask(subs.get(0));
+            Subtask first = subtasks.get(subs.get(0));
             for (int i = 1; i < subs.size(); i++) {
-                Subtask n = getSubtask(subs.get(i));
+                Subtask n = subtasks.get(subs.get(i));
                 if (!n.getStatus().equals(first.getStatus())){
                     stat = TaskStatus.IN_PROGRESS;
                     break;
@@ -157,10 +166,11 @@ public class InMemoryTaskManager implements TaskManager {
         return idSubtask;
     }
 
+
     @Override
     public int addNewSubtask(Subtask subtask) {
         final int id = ++getId;
-        Epic subEpic = getEpic(subtask.getEpicId());
+        Epic subEpic = epics.get(subtask.getEpicId());
         if (subEpic == null){
             System.out.println("Такого эпика не существует");
             subtask.setEpicId(0);
@@ -173,13 +183,15 @@ public class InMemoryTaskManager implements TaskManager {
         return id;
     }
 
+
+
     @Override
     public void updateSubtask(Subtask updateSubtask) {
         Subtask subtask = subtasks.get(updateSubtask.getId());
             if (!updateSubtask.equals(subtask)) {
                 subtasks.put(updateSubtask.getId(), updateSubtask);
                 }
-        Epic subEpic = getEpic(updateSubtask.getEpicId());
+        Epic subEpic = epics.get(updateSubtask.getEpicId());
         updateEpicStatus(subEpic);
     }
 
@@ -189,11 +201,15 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Такой подзадачи не существует");
         } else {
             Subtask deletedSubtask = getSubtask(id);
-            Epic subEpic = getEpic(deletedSubtask.getEpicId());
+            Epic subEpic = epics.get(deletedSubtask.getEpicId());
+
+            historyManager.remove(id);
             subEpic.removeSubtask(id);
+
 
             subtasks.remove(id);
             updateEpicStatus(subEpic);
+
         }
     }
 
