@@ -6,6 +6,7 @@ public class InMemoryHistoryManager implements HistoryManager{
   public Map<Integer, Node> nodeMap = new HashMap<>();
   private Node head;
   private Node tail;
+  public Node node = new Node();
 
     @Override
     public List<Task> getHistory() {
@@ -50,14 +51,12 @@ public class InMemoryHistoryManager implements HistoryManager{
         nodeMap.remove(id);
         if (removedNode == head){
             head = removedNode.next;
-            removedNode.next.prev = null;
         } else if(removedNode == tail){
             tail = removedNode.prev;
             removedNode.prev.next = null;
-        } else{
-            removedNode.prev.next = removedNode.next;
-            removedNode.next.prev = removedNode.prev;
         }
+        node.removeNode(removedNode);
+
     }
 
 }

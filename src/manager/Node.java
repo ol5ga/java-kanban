@@ -6,16 +6,15 @@ public class Node {
     Node next;
     Node prev;
 
-    /*removeNode(Node node){
+    public void removeNode (Node node){
         if (node.prev == null){
             node.next.prev = null;
-        } else if(node.next == next){
-            tail = removedNode.prev;
-            removedNode.prev.next = null;
+        } else if(node.next == null){
+            node.prev.next = null;
         } else{
-            removedNode.prev.next = removedNode.next;
-            removedNode.next.prev = removedNode.prev;
+            node.prev.next = node.next;
+            node.next.prev = node.prev;
         }
-    }*/
+    }
 }
 
