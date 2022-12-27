@@ -3,7 +3,7 @@ import tasks.Task;
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager{
-  public Map<Integer, Node> nodeMap = new HashMap<>();
+  private final Map<Integer, Node> nodeMap = new HashMap<>();
   private Node head;
   private Node tail;
   public Node node = new Node();
@@ -30,6 +30,7 @@ public class InMemoryHistoryManager implements HistoryManager{
         if (head == null){
             newTask.task = task;
             head = newTask;
+            tail = newTask;
         } else if (tail == null){
             newTask.task = task;
             newTask.prev = head;
