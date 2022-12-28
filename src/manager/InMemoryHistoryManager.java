@@ -6,17 +6,21 @@ public class InMemoryHistoryManager implements HistoryManager{
   private final Map<Integer, Node> nodeMap = new HashMap<>();
   private Node head;
   private Node tail;
-  public Node node = new Node();
+
 
     @Override
     public List<Task> getHistory() {
-       List<Task> history = new ArrayList<>();
-       Node node = head;
-       while(node.next != null){
-           history.add(node.task);
-           node = node.next;
-       }
-       history.add(tail.task);
+        List<Task> history = new ArrayList<>();
+        Node node = head;
+        if (head == null){
+            System.out.println("История пуста");
+        } else {
+            while (node.getNext() != null) {
+                history.add(node.getTask());
+                node = node.getNext();
+            }
+            history.add(tail.getTask());
+        }
        return history;
     }
 
@@ -25,39 +29,59 @@ public class InMemoryHistoryManager implements HistoryManager{
         if (nodeMap.containsKey(task.getId())) {
             remove(task.getId());
         }
-        Node newTask = new Node();
+        Node newTask = new Node(task);
+        linkLast(newTask);
+        nodeMap.put(task.getId(), newTask);
 
-        if (head == null){
-            newTask.task = task;
-            head = newTask;
-            tail = newTask;
-        } else if (tail == null){
-            newTask.task = task;
-            newTask.prev = head;
-            head.next = newTask;
-            tail = newTask;
+    }
+
+    private void linkLast(Node node){
+
+        if (tail == null){
+           head = node;
+            tail = node;
+        } else if (tail == head){
+            node.setPrev(head);
+            head.setNext(node);
+            tail = node;
         } else {
-            newTask.task = task;
-            newTask.prev = tail;
-            tail.next = newTask;
-            tail = newTask;
+            node.setPrev(tail);
+            tail.setNext(node);
+            tail = node;
         }
-        nodeMap.put(newTask.task.getId(), newTask);
-
     }
 
     @Override
     public void remove(int id){
         Node removedNode = nodeMap.get(id);
         nodeMap.remove(id);
-        if (removedNode == head){
-            head = removedNode.next;
-        } else if(removedNode == tail){
-            tail = removedNode.prev;
-            removedNode.prev.next = null;
-        }
-        node.removeNode(removedNode);
+        if (head == tail){
+            System.out.println("История пуста");
+            head = null;
+            tail = null;
+            removedNode.setTask(null);
+        } else {
+            if (removedNode == head){
+                head = removedNode.getNext();
+            } else if(removedNode == tail){
+                tail = removedNode.getPrev();
+                removedNode.getPrev().setNext(null);
+            }
 
+
+
+            removeNode(removedNode);
+        }
+    }
+    public void removeNode (Node node){
+        if (node.getPrev() == null){
+            node.getNext().setPrev(null);
+        } else if(node.getNext() == null){
+            node.getPrev().setNext(null);
+        } else{
+            node.getPrev().setNext(node.getNext());
+            node.getNext().setPrev(node.getPrev());
+        }
     }
 
 }

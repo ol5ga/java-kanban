@@ -15,7 +15,7 @@ public class Main {
     TaskManager manager = Managers.getDefault();
 
 
-   Task task1 = new Task("Task 1", "description 1");
+   /*Task task1 = new Task("Task 1", "description 1");
     Task task2 = new Task("Task 2", "description 2");
         int task1Id = manager.addNewTask(task1);
         int task2Id = manager.addNewTask(task2);
@@ -46,13 +46,11 @@ public class Main {
 
 
         System.out.println(manager.getHistory());
-        System.out.println(manager.getAllEpics());
-       manager.deleteAllEpics();
-        System.out.println(manager.getAllEpics());
-        System.out.println(manager.getHistory());
+     manager.deleteEpic(4);
+       System.out.println(manager.getHistory());
 
 
-         /*Subtask subtask2N = new Subtask("Subtask 2n", "sub-description 2n", 1);
+         Subtask subtask2N = new Subtask("Subtask 2n", "sub-description 2n", 1);
         int subtask1Id = manager.addNewSubtask(subtask1);
         int subtask2Id = manager.addNewSubtask(subtask2);
         int subtask3Id = manager.addNewSubtask(subtask3);
