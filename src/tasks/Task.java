@@ -6,11 +6,13 @@ public class Task {
     protected String name;
     protected TaskStatus status;
     protected String description;
+    protected TaskType type;
 
     public Task (String name, String description) {
         this.name = name;
         this.status = TaskStatus.NEW;
         this.description = description;
+        this.type = TaskType.TASK;
     }
 
     public Task (int id, String name, String description) {
@@ -18,6 +20,7 @@ public class Task {
         this.name = name;
         this.status = TaskStatus.NEW;
         this.description = description;
+        this.type = TaskType.TASK;
     }
 
     public void setId(int id) {
@@ -77,4 +80,7 @@ public class Task {
     }
 
 
+    public TaskType getType() {
+        return type;
+    }
 }

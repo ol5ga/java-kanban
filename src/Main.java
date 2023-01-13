@@ -1,27 +1,36 @@
-import manager.HistoryManager;
-import manager.InMemoryTaskManager;
-import manager.Managers;
-import manager.TaskManager;
+import manager.*;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 import tasks.TaskStatus;
 
+import java.io.File;
+import java.io.IOException;
+
 public class Main {
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws ManagerSaveException, IOException {
+        File file = new File("resources/task.csv");
 
     TaskManager manager = Managers.getDefault();
 
 
-   /*Task task1 = new Task("Task 1", "description 1");
-    Task task2 = new Task("Task 2", "description 2");
+    Task task1 = new Task("Task 1", "description 1");
         int task1Id = manager.addNewTask(task1);
+
+    Task task2 = new Task("Task 2", "description 2");
+
         int task2Id = manager.addNewTask(task2);
         task1.setStatus(TaskStatus.NEW);
         task2.setStatus(TaskStatus.IN_PROGRESS);
 
+        manager.getTask(1);
+        manager.getTask(2);
+
+        FileBackedTasksManager manager1 = FileBackedTasksManager.loadFromFile(file);
+
+       //System.out.println(manager.getHistory());
+/*
         Epic epic1 = new Epic("Epic 1", "epic-description 1");
         int epic1Id = manager.addNewEpic(epic1);
         Epic epic2 = new Epic("Epic 2", "epic-description 2");

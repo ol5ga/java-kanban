@@ -11,47 +11,47 @@ import java.util.List;
 
 public interface TaskManager {
 
-    public List<Task> getAllTasks();
+    public List<Task> getAllTasks() throws ManagerSaveException;
 
-    public void deleteAllTasks();
+    public void deleteAllTasks() throws ManagerSaveException;
 
-    public Task getTask(int id);
+    public Task getTask(int id) throws ManagerSaveException;
 
-    public int addNewTask(Task task);
+    public int addNewTask(Task task) throws ManagerSaveException;
 
-    public void updateTask(Task updateTask);
+    public void updateTask(Task updateTask) throws ManagerSaveException;
 
-    public void deleteTask(int id);
+    public void deleteTask(int id) throws ManagerSaveException ;
 
-    public List<Epic> getAllEpics();
+    public List<Epic> getAllEpics() throws ManagerSaveException;
 
-    public void deleteAllEpics();
+    public void deleteAllEpics() throws ManagerSaveException ;
 
-    public Epic getEpic(int id);
+    public Epic getEpic(int id) throws ManagerSaveException ;
 
-    public int addNewEpic(Epic epic);
+    public int addNewEpic(Epic epic) throws ManagerSaveException ;
 
-    public void updateEpic(Epic updateEpic);
+    public void updateEpic(Epic updateEpic) throws ManagerSaveException ;
 
-    public void deleteEpic(int id);
+    public void deleteEpic(int id) throws ManagerSaveException ;
 
-    public TaskStatus updateEpicStatus(Epic epic);
+    public TaskStatus updateEpicStatus(Epic epic) throws ManagerSaveException ;
 
-    public List<Subtask> getAllSubtasks();
+    public List<Subtask> getAllSubtasks() throws ManagerSaveException ;
 
-    public void deleteAllSubtasks();
+    public void deleteAllSubtasks() throws ManagerSaveException ;
 
-    public Subtask getSubtask(int id);
+    public Subtask getSubtask(int id) throws ManagerSaveException ;
 
-    public int addNewSubtask(Subtask subtask);
+    public int addNewSubtask(Subtask subtask) throws ManagerSaveException ;
 
-    public void updateSubtask(Subtask updateSubtask);
+    public void updateSubtask(Subtask updateSubtask) throws ManagerSaveException ;
 
-    public void deleteSubtask(int id);
+    public void deleteSubtask(int id) throws ManagerSaveException ;
 
-    public List<Subtask> getEpicSubtasks(int epicId);
+    public List<Subtask> getEpicSubtasks(int epicId) throws ManagerSaveException;
 
-    public List<Task> getHistory();
+    public List<Task> getHistory() throws ManagerSaveException;
 
 }
 
