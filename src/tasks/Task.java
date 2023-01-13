@@ -23,6 +23,14 @@ public class Task {
         this.type = TaskType.TASK;
     }
 
+    public Task (int id, String name, TaskStatus status, String description) {
+        this.id = id;
+        this.name = name;
+        this.status = status;
+        this.description = description;
+        this.type = TaskType.TASK;
+    }
+
     public void setId(int id) {
 
         this.id = id;

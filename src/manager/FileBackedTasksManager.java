@@ -1,12 +1,7 @@
 package manager;
 
 import tasks.*;
-
-import manager.Managers;
-import manager.TaskManager;
-
 import java.io.*;
-import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +20,8 @@ public class FileBackedTasksManager  extends InMemoryTaskManager{
             taskToString = subTask.getId() + ","  + subTask.getType()+ "," + subTask.getName() + "," + subTask.getStatus() + "," + subTask.getDescription() + "," + subTask.getEpicId();
         } else {
             taskToString = task.getId() + "," + task.getType() + "," + task.getName() + "," + task.getStatus() + "," + task.getDescription();
-
-        }return taskToString;
+}
+        return taskToString;
     }
 
     public static Task fromString(String value) throws ManagerSaveException {
@@ -38,10 +33,15 @@ public class FileBackedTasksManager  extends InMemoryTaskManager{
         String description = values[4];
         if (type.equals(TaskType.SUBTASK)){
             int epicId = Integer.parseInt(values[5]);
-            Task subtask = new Subtask(id,name,description,epicId);
+            Task subtask = new Subtask(id,name,status,description,epicId);
             return subtask;
+        } else if(type.equals(TaskType.EPIC)) {
+            Task epic = new Epic(id, name,status, description);
+
+            return epic;
         } else{
-            Task task = new Task(id,name,description);
+            Task task = new Task(id, name,status, description);
+
             return task;
         }
     }
@@ -73,10 +73,9 @@ public class FileBackedTasksManager  extends InMemoryTaskManager{
         final FileBackedTasksManager taskManager = new FileBackedTasksManager(file);
         FileReader reader = new FileReader(file);
         BufferedReader readFile = new BufferedReader(reader);
-       List <String> lines = new ArrayList<>();
-       HashMap<Integer, Task> tasks = new HashMap<>();
-       HistoryManager historyManager = Managers.getDefaultHistory();
+        List <String> lines = new ArrayList<>();
        int getId = 0;
+
         while(readFile.ready()){
          String line = readFile.readLine();
             lines.add(line);
@@ -85,17 +84,24 @@ public class FileBackedTasksManager  extends InMemoryTaskManager{
         for (int i=1; i<lines.size()-2; i++){
             String taskLine = lines.get(i);
             Task task = fromString(taskLine);
-            tasks.put(task.getId(), task);
-
+            if (task.getType().equals(TaskType.TASK)) {
+                taskManager.tasks.put(task.getId(), task);
+            } else if(task.getType().equals(TaskType.EPIC)){
+                Epic epic = (Epic)task;
+                taskManager.epics.put(task.getId(), epic);
+            } else {
+                taskManager.subtasks.put(task.getId(), (Subtask)task);
             }
+            if (task.getId() > getId){
+                getId = task.getId();
+            }
+        }
         String historyLine = lines.get(lines.size()-1);
        List<Integer> historyIds = historyFromString(historyLine);
        for (Integer id : historyIds) {
-           System.out.println(id);
-           Task task = getTask(id);
-           historyManager.addTask(task);
-       }
-         return taskManager;
+           Task task = taskManager.findTask(id);
+           taskManager.historyManager.addTask(task);
+       } return taskManager;
     }
     protected void save() throws ManagerSaveException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))){
@@ -118,6 +124,18 @@ public class FileBackedTasksManager  extends InMemoryTaskManager{
             throw new ManagerSaveException("Ошибка сохранения");
         }
     }
+    public Task findTask(int id){
+       if (tasks.containsKey(id)){
+            Task task = tasks.get(id);
+            return task;
+        } else if(epics.containsKey(id)){
+           Epic epic = epics.get(id);
+           return epic;
+       } else {
+           Subtask subtask = subtasks.get(id);
+           return subtask;
+       }
+    }
     @Override
     public Task getTask(int id) throws ManagerSaveException {
         final Task task = super.getTask(id);
@@ -132,6 +150,7 @@ public class FileBackedTasksManager  extends InMemoryTaskManager{
         return allTasks;
     }
 
+    @Override
     public void deleteAllTasks() throws ManagerSaveException {
         super.deleteAllTasks();
         save();

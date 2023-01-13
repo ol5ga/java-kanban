@@ -12,11 +12,15 @@ public class Main {
     public static void main(String[] args) throws ManagerSaveException, IOException {
         File file = new File("resources/task.csv");
 
-    TaskManager manager = Managers.getDefault();
+  TaskManager manager = Managers.getDefault();
 
 
-    Task task1 = new Task("Task 1", "description 1");
+/*
+  FileBackedTasksManager manager1 = FileBackedTasksManager.loadFromFile(file);
+ Task task1 = new Task("Task 1", "description 1");
         int task1Id = manager.addNewTask(task1);
+        Epic epic1 = new Epic("Epic 1", "epic-description 1");
+        int epic1Id = manager.addNewEpic(epic1);
 
     Task task2 = new Task("Task 2", "description 2");
 
@@ -25,35 +29,34 @@ public class Main {
         task2.setStatus(TaskStatus.IN_PROGRESS);
 
         manager.getTask(1);
-        manager.getTask(2);
+        manager.getTask(3);
 
-        FileBackedTasksManager manager1 = FileBackedTasksManager.loadFromFile(file);
+        Subtask subtask1 = new Subtask("Subtask 1", "sub-description 1", 2);
+        int subtask1Id = manager.addNewSubtask(subtask1);
 
-       //System.out.println(manager.getHistory());
-/*
-        Epic epic1 = new Epic("Epic 1", "epic-description 1");
-        int epic1Id = manager.addNewEpic(epic1);
         Epic epic2 = new Epic("Epic 2", "epic-description 2");
         int epic2Id = manager.addNewEpic(epic2);
 
-        Subtask subtask1 = new Subtask("Subtask 1", "sub-description 1", 3);
-        Subtask subtask2 = new Subtask("Subtask 2", "sub-description 2", 4);
-        Subtask subtask3 = new Subtask("Subtask 3","sub-description 3", 3);
-        int subtask1Id = manager.addNewSubtask(subtask1);
+
+        Subtask subtask2 = new Subtask("Subtask 2", "sub-description 2", 5);
+        Subtask subtask3 = new Subtask("Subtask 3","sub-description 3", 2);
+
         int subtask2Id = manager.addNewSubtask(subtask2);
         int subtask3Id = manager.addNewSubtask(subtask3);
 
 
-        manager.getTask(2);
+        manager.getTask(3);
          manager.getTask(1);
         manager.getSubtask(6);
-        manager.getEpic(3);
+        manager.getEpic(2);
         manager.getSubtask(7);
-        manager.getEpic(4);
-        manager.getSubtask(5);
+        manager.getEpic(5);
+        manager.getSubtask(4);
 
 
 
+        System.out.println(manager1.getHistory());
+        System.out.println(manager1.getAllEpics());
         System.out.println(manager.getHistory());
      manager.deleteEpic(4);
        System.out.println(manager.getHistory());
