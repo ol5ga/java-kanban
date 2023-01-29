@@ -1,6 +1,8 @@
 package manager;
 
 import tasks.*;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,9 +11,9 @@ public class CSVTaskFormat {
         String taskToString = "";
         if (task.getType().equals(TaskType.SUBTASK)){
             Subtask subTask = (Subtask) task;
-            taskToString = subTask.getId() + ","  + subTask.getType()+ "," + subTask.getName() + "," + subTask.getStatus() + "," + subTask.getDescription() + "," + subTask.getEpicId();
+            taskToString = subTask.getId() + ","  + subTask.getType()+ "," + subTask.getName() + "," + subTask.getStatus() + "," + subTask.getDescription() + "," + subTask.getEpicId() + "," + subTask.getStartTime() + "," + subTask.getDuration();
         } else {
-            taskToString = task.getId() + "," + task.getType() + "," + task.getName() + "," + task.getStatus() + "," + task.getDescription();
+            taskToString = task.getId() + "," + task.getType() + "," + task.getName() + "," + task.getStatus() + "," + task.getDescription() + "," + task.getStartTime() + "," + task.getDuration();
         }
         return taskToString;
     }
@@ -23,16 +25,18 @@ public class CSVTaskFormat {
         String name = values[2];
         TaskStatus status = TaskStatus.valueOf(values[3]);
         String description = values[4];
+        LocalDateTime startTime = LocalDateTime.parse(values[5]);
+        int duration = Integer.valueOf(values[6]);
         if (type.equals(TaskType.SUBTASK)){
             int epicId = Integer.parseInt(values[5]);
-            Task subtask = new Subtask(id,name,status,description,epicId);
+            Task subtask = new Subtask(id,name,status,description,epicId,startTime,duration);
             return subtask;
         } else if(type.equals(TaskType.EPIC)) {
-            Task epic = new Epic(id, name,status, description);
+            Task epic = new Epic(id, name,status, description,startTime,duration);
 
             return epic;
         } else{
-            Task task = new Task(id, name,status, description);
+            Task task = new Task(id, name,status, description,startTime,duration);
 
             return task;
         }

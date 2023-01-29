@@ -5,9 +5,11 @@ import tasks.Subtask;
 import tasks.Task;
 import tasks.TaskStatus;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
 
@@ -46,12 +48,18 @@ public interface TaskManager {
     public int addNewSubtask(Subtask subtask) throws ManagerSaveException ;
 
     public void updateSubtask(Subtask updateSubtask) throws ManagerSaveException ;
+    public void updateEpicTime(Epic epic) throws ManagerSaveException;
+    public int updateEpicDuration(Epic epic) throws ManagerSaveException;
 
     public void deleteSubtask(int id) throws ManagerSaveException ;
 
     public List<Subtask> getEpicSubtasks(int epicId) throws ManagerSaveException;
 
     public List<Task> getHistory() throws ManagerSaveException;
+
+    public Set<Task> getPrioritizedTasks();
+
+    public void checkTime(Task task) throws ManagerSaveException;
 
 }
 

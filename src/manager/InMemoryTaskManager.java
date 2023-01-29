@@ -1,8 +1,8 @@
 package manager;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.Comparator;
 import tasks.Epic;
 import tasks.Task;
 import tasks.Subtask;
@@ -15,6 +15,8 @@ public class InMemoryTaskManager implements TaskManager {
     public int getId = 0;
     protected final HistoryManager historyManager = Managers.getDefaultHistory();
 
+    Comparator<Task> comparator = Comparator.comparing(Task::getStartTime);
+    protected Set<Task> prioritizedTasks = new TreeSet<>(comparator);
     @Override
     public ArrayList<Task> getAllTasks() throws ManagerSaveException {
         ArrayList<Task> allTasks = new ArrayList<>();
@@ -43,17 +45,29 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public int addNewTask(Task task) throws ManagerSaveException {
         final int id = ++getId;
-        task.setId(id);
-        tasks.put(id,task);
-        return id;
+        try {
+            task.setId(id);
+            checkTime(task);
+            tasks.put(id,task);
+            prioritizedTasks.add(task);
+            return id;
+        } catch (ManagerSaveException exp){
+            System.out.println(exp.getMessage());
+            return 0;
+        }
     }
 
     @Override
     public void updateTask(Task updateTask) throws ManagerSaveException {
         Task task = tasks.get(updateTask.getId());
             if (!updateTask.equals(task)) {
-                tasks.put(updateTask.getId(), updateTask);
-            }
+                try {
+                    checkTime(updateTask);
+                    tasks.put(updateTask.getId(), updateTask);
+            } catch (ManagerSaveException exp) {
+                    System.out.println(exp.getMessage());
+                }
+        }
     }
 
     @Override
@@ -68,6 +82,8 @@ public class InMemoryTaskManager implements TaskManager {
         ArrayList<Epic> allEpics = new ArrayList<>();
         for (Epic epic: epics.values()) {
             updateEpicStatus(epic);
+            updateEpicTime(epic);
+            updateEpicDuration(epic);
         }
         for (Integer id : epics.keySet()) {
             allEpics.add(epics.get(id));
@@ -97,16 +113,29 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public int addNewEpic(Epic epic) throws ManagerSaveException  {
         final int id = ++getId;
-        epic.setId(id);
-        epics.put(id,epic);
-        return id;
+        try {
+            epic.setId(id);
+            checkTime(epic);
+            epics.put(id,epic);
+            prioritizedTasks.add(epic);
+            return id;
+        } catch (ManagerSaveException exp){
+            System.out.println(exp.getMessage());
+            return 0;
+        }
+
     }
     @Override
-    public void updateEpic(Epic updateEpic)  throws ManagerSaveException  {
+    public void updateEpic(Epic updateEpic)  throws ManagerSaveException {
         Epic epic = epics.get(updateEpic.getId());
-            if(!updateEpic.equals(epic)){
+        if (!updateEpic.equals(epic)) {
+            try {
+                checkTime(epic);
                 epics.put(updateEpic.getId(), updateEpic);
-                }
+            } catch (ManagerSaveException exp) {
+                System.out.println(exp.getMessage());
+            }
+        }
     }
 
     @Override
@@ -147,6 +176,34 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public void updateEpicTime(Epic epic) throws ManagerSaveException{
+        ArrayList <Integer> subs = epic.getSubtaskId();
+        LocalDateTime startTime = getSubtask(subs.get(0)).getStartTime();
+        LocalDateTime endTime = getSubtask(subs.get(0)).getStartTime();
+        for (int i=1; i<subs.size(); i++) {
+            LocalDateTime time = getSubtask(subs.get(i)).getStartTime();
+            if (startTime.isAfter(time)) {
+                startTime = time;
+            }
+            if (endTime.isBefore(time)){
+                endTime = time;
+            }
+
+        } epic.setStartTime(startTime);
+        epic.setEndTime(endTime);
+    }
+
+    @Override
+    public int updateEpicDuration(Epic epic) throws ManagerSaveException {
+        ArrayList <Integer> subs = epic.getSubtaskId();
+        int duration = 0;
+        for (Integer sub : subs) {
+            duration = duration + getSubtask(sub).getDuration();
+            } epic.setDuration(duration);
+        return duration;
+    }
+
+    @Override
     public ArrayList<Subtask> getAllSubtasks() throws ManagerSaveException  {
         ArrayList<Subtask> allSubtasks = new ArrayList<>();
         for (Integer id : subtasks.keySet()) {
@@ -161,6 +218,8 @@ public class InMemoryTaskManager implements TaskManager {
         for (Epic value : epics.values()) {
             value.cleanSubtaskIds();
             updateEpicStatus(value);
+            updateEpicTime(value);
+            updateEpicDuration(value);
 
         }
         for (Subtask subtask : subtasks.values()) {
@@ -182,17 +241,30 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public int addNewSubtask(Subtask subtask) throws ManagerSaveException  {
         final int id = ++getId;
+        int idCatch=0;
         Epic subEpic = epics.get(subtask.getEpicId());
         if (subEpic == null){
             System.out.println("Такого эпика не существует");
             subtask.setEpicId(0);
         } else {
-        subtask.setId(id);
-        subtasks.put(id,subtask);
-        subEpic.getSubtaskId().add(subtask.getId());
-        }
-        updateEpicStatus(subEpic);
-        return id;
+            try {
+
+                checkTime(subtask);
+                subtask.setId(id);
+                subtasks.put(id,subtask);
+                prioritizedTasks.add(subtask);
+                subEpic.getSubtaskId().add(subtask.getId());
+                updateEpicStatus(subEpic);
+                updateEpicTime(subEpic);
+                updateEpicDuration(subEpic);
+                idCatch = id;
+            } catch (ManagerSaveException exp){
+                System.out.println(exp.getMessage());
+                idCatch = 0;
+            }
+
+        } return idCatch;
+
     }
 
 
@@ -201,10 +273,19 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateSubtask(Subtask updateSubtask) throws ManagerSaveException  {
         Subtask subtask = subtasks.get(updateSubtask.getId());
             if (!updateSubtask.equals(subtask)) {
-                subtasks.put(updateSubtask.getId(), updateSubtask);
+                try {
+                    checkTime(updateSubtask);
+                    subtasks.put(updateSubtask.getId(), updateSubtask);
+                    Epic subEpic = epics.get(updateSubtask.getEpicId());
+                    updateEpicStatus(subEpic);
+                    updateEpicTime(subEpic);
+                    updateEpicDuration(subEpic);
+                } catch (ManagerSaveException exp) {
+                    System.out.println(exp.getMessage());
+
                 }
-        Epic subEpic = epics.get(updateSubtask.getEpicId());
-        updateEpicStatus(subEpic);
+            }
+
     }
 
     @Override
@@ -221,6 +302,8 @@ public class InMemoryTaskManager implements TaskManager {
 
             subtasks.remove(id);
             updateEpicStatus(subEpic);
+            updateEpicTime(subEpic);
+            updateEpicDuration(subEpic);
 
         }
     }
@@ -240,6 +323,27 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Task> getHistory() throws ManagerSaveException {
         return historyManager.getHistory();
     }
+    @Override
+    public Set<Task> getPrioritizedTasks(){
+        return prioritizedTasks;
+    }
+
+    @Override
+    public void checkTime(Task task) throws ManagerSaveException {
+        LocalDateTime startTime = task.getStartTime();
+        for (Task taskTree: prioritizedTasks){
+            if (startTime.isBefore(taskTree.getStartTime()) && startTime.isAfter(taskTree.getEndTime())){
+                throw new ManagerSaveException("Задачи нельзя выполнять одновременно");
+            }
+        }
+    }
+
+
+
+
+
+
+
 
 
 }
