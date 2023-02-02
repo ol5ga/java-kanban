@@ -16,23 +16,19 @@ public class Epic extends Task {
         this.subtaskIds = subtaskIds;
     }
 
-    public Epic(String name, String description, LocalDateTime startTime, int duration) {
-        super(name, description, startTime, duration);
+    public Epic(String name, String description) {
+        super(name, description,LocalDateTime.now(), 0);
         this.type = TaskType.EPIC;
-
     }
 
-    public Epic(int id, String name, String description, LocalDateTime startTime, int duration) {
-        super(id, name, description, startTime, duration);
+    public Epic(int id, String name, String description) {
+        super(id, name, description, LocalDateTime.now(), 0);
         this.status = TaskStatus.NEW;
         this.type = TaskType.EPIC;
-        this.startTime = LocalDateTime.now();
-        this.duration = 0;
-
     }
-    public Epic(int id, String name, TaskStatus status, String description, LocalDateTime startTime, int duration) {
-        super(id, name, status, description, startTime, duration);
-        this.status = TaskStatus.NEW;
+
+    public Epic(int id, String name,TaskStatus status, String description, LocalDateTime time, int duration) {
+        super(id, name, status, description, time, duration);
         this.type = TaskType.EPIC;
 
     }

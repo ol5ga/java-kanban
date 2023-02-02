@@ -32,7 +32,7 @@ public class CSVTaskFormat {
             Task subtask = new Subtask(id,name,status,description,epicId,startTime,duration);
             return subtask;
         } else if(type.equals(TaskType.EPIC)) {
-            Task epic = new Epic(id, name,status, description,startTime,duration);
+            Task epic = new Epic(id, name, status, description,startTime,duration);
 
             return epic;
         } else{

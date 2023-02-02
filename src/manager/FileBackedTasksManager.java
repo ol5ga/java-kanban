@@ -122,8 +122,8 @@ public class FileBackedTasksManager  extends InMemoryTaskManager{
     }
 
     @Override
-    public ArrayList<Epic> getAllEpics() throws ManagerSaveException {
-        ArrayList<Epic> epics = super.getAllEpics();
+    public List<Epic> getAllEpics() throws ManagerSaveException {
+        List<Epic> epics = super.getAllEpics();
         save();
         return epics;
     }

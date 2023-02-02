@@ -24,6 +24,7 @@ public class InMemoryHistoryManagerTest {
 //    subtask = new Subtask();
     }
 
+
     @Test
     void getHistory(){
         assertNotNull(historyManager.getHistory(), "История пуста");
@@ -31,7 +32,10 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     void add(){
-
+//        historyManager.add(task);
+//        final List<Task> history = historyManager.getHistory();
+//        assertNotNull(history, "История не пустая.");
+//        assertEquals(1, history.size(), "История не пустая.");
     }
 
     @Test

@@ -4,8 +4,13 @@ import manager.InMemoryTaskManager;
 import manager.ManagerSaveException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tasks.Task;
 import tasks.TaskManagerTest;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
@@ -21,5 +26,9 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
         assertNotNull(taskManager.getAllTasks(),"Возвращает пустой список");
 
     }
+
+
+
+
 
 }

@@ -48,8 +48,8 @@ public interface TaskManager {
     public int addNewSubtask(Subtask subtask) throws ManagerSaveException ;
 
     public void updateSubtask(Subtask updateSubtask) throws ManagerSaveException ;
-    public void updateEpicTime(Epic epic) throws ManagerSaveException;
-    public int updateEpicDuration(Epic epic) throws ManagerSaveException;
+   public void updateEpicTime(Epic epic) throws ManagerSaveException;
+   public int updateEpicDuration(Epic epic) throws ManagerSaveException;
 
     public void deleteSubtask(int id) throws ManagerSaveException ;
 
@@ -59,7 +59,7 @@ public interface TaskManager {
 
     public Set<Task> getPrioritizedTasks();
 
-    public void checkTime(Task task) throws ManagerSaveException;
+     public void checkTime(Task task) throws ManagerSaveException;
 
 }
 

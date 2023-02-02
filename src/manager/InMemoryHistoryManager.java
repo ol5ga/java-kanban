@@ -67,9 +67,6 @@ public class InMemoryHistoryManager implements HistoryManager{
                 tail = removedNode.getPrev();
                 removedNode.getPrev().setNext(null);
             }
-
-
-
             removeNode(removedNode);
         }
     }
