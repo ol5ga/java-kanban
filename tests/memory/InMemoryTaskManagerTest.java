@@ -24,6 +24,7 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
     @Test
     public void createInMemoryTaskManager() throws ManagerSaveException {
         assertNotNull(taskManager.getAllTasks(),"Возвращает пустой список");
+        assertNotNull(taskManager.getPrioritizedTasks(),"Возвращает пустой список");
 
     }
 

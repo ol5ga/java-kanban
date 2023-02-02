@@ -3,15 +3,18 @@ package manager;
 import tasks.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CSVTaskFormat {
+
+
     public static String toString(Task task){
         String taskToString = "";
         if (task.getType().equals(TaskType.SUBTASK)){
             Subtask subTask = (Subtask) task;
-            taskToString = subTask.getId() + ","  + subTask.getType()+ "," + subTask.getName() + "," + subTask.getStatus() + "," + subTask.getDescription() + "," + subTask.getEpicId() + "," + subTask.getStartTime() + "," + subTask.getDuration();
+            taskToString = subTask.getId() + ","  + subTask.getType()+ "," + subTask.getName() + "," + subTask.getStatus() + "," + subTask.getDescription()  + "," + subTask.getStartTime() + "," + subTask.getDuration() + "," + subTask.getEpicId();
         } else {
             taskToString = task.getId() + "," + task.getType() + "," + task.getName() + "," + task.getStatus() + "," + task.getDescription() + "," + task.getStartTime() + "," + task.getDuration();
         }
@@ -28,7 +31,7 @@ public class CSVTaskFormat {
         LocalDateTime startTime = LocalDateTime.parse(values[5]);
         int duration = Integer.valueOf(values[6]);
         if (type.equals(TaskType.SUBTASK)){
-            int epicId = Integer.parseInt(values[5]);
+            int epicId = Integer.parseInt(values[7]);
             Task subtask = new Subtask(id,name,status,description,epicId,startTime,duration);
             return subtask;
         } else if(type.equals(TaskType.EPIC)) {

@@ -24,10 +24,7 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
         initTasks();
     }
 
-    @AfterEach
-    protected void tearDown(){
-        assertTrue(file.delete());
-    }
+
 
     @Test
     public void loadFromFile() throws ManagerSaveException, IOException {
@@ -35,5 +32,7 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
         final List<Task> tasks = taskManager2.getAllTasks();
         assertNotNull(tasks, "Вовращает не пустой список");
         assertEquals(1,tasks.size(), "Возвращает не пустой список");
+        assertNotNull(taskManager.getPrioritizedTasks(),"Возвращает пустой список");
+
     }
 }

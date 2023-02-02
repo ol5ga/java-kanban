@@ -30,8 +30,7 @@ public abstract class TaskManagerTest <T extends TaskManager> {
 
    @Test
     void getAllTasks() throws ManagerSaveException{
-        System.out.println(task);
-        Task task2 = new Task("Task 2", "description 2",LocalDateTime.of(2023,01,29,10,00),15);
+       Task task2 = new Task("Task 2", "description 2",LocalDateTime.of(2023,01,29,10,00),15);
         int task2Id = taskManager.addNewTask(task2);
         final List<Task> tasks = taskManager.getAllTasks();
         assertNotNull(tasks, "Задачи на возвращаются.");
