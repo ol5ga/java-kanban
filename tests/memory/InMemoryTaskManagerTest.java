@@ -18,6 +18,7 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
     @BeforeEach
     public void setUp() throws ManagerSaveException {
         taskManager = new InMemoryTaskManager();
+        emptyManager = new InMemoryTaskManager();
         initTasks();
     }
 

@@ -15,75 +15,39 @@ public class Main {
 
     public static void main(String[] args) throws ManagerSaveException, IOException {
         TaskManager manager = Managers.getDefaultFile();
-        File file = new File("resources/task.csv");
+       File file = new File("resources/emptyTest.csv");
 
-        Task task1 = new Task("Task 1", "description 1", LocalDateTime.of(2023,01,28,22,30),15);
+    }
+
+    public static void testSaving () throws ManagerSaveException {
+        TaskManager manager = Managers.getDefaultFile();
+        Task task1 = new Task("Task 1", "description 1");
         int task1Id = manager.addNewTask(task1);
         Epic epic1 = new Epic("Epic 1", "epic-description 1");
         int epic1Id = manager.addNewEpic(epic1);
 
-//        Task task2 = new Task("Task 2", "description 2",LocalDateTime.of(2023,01,28,23,00),15);
-//
-//        int task2Id = manager.addNewTask(task2);
-//        task1.setStatus(TaskStatus.NEW);
-//        task2.setStatus(TaskStatus.IN_PROGRESS);
-//
-        Subtask subtask1 = new Subtask("Subtask 1", "sub-description 1", 2,LocalDateTime.of(2023,01,29,13,25),25);
+        Task task2 = new Task("Task 2", "description 2");
+        int task2Id = manager.addNewTask(task2);
+        task1.setStatus(TaskStatus.NEW);
+        task2.setStatus(TaskStatus.IN_PROGRESS);
+
+        manager.getTask(1);
+        manager.getTask(3);
+
+        Subtask subtask1 = new Subtask("Subtask 1", "sub-description 1", 2);
         int subtask1Id = manager.addNewSubtask(subtask1);
 
-//        Epic epic2 = new Epic("Epic 2", "epic-description 2");
-//        int epic2Id = manager.addNewEpic(epic2);
+        Epic epic2 = new Epic("Epic 2", "epic-description 2");
+        int epic2Id = manager.addNewEpic(epic2);
 
-        testLoading(file);
 
-//        Subtask subtask2 = new Subtask("Subtask 2", "sub-description 2", 5, LocalDateTime.now(),10);
-       // Subtask subtask3 = new Subtask("Subtask 3","sub-description 3", 2,LocalDateTime.of(2023,01,29,00,15),10);
+        Subtask subtask2 = new Subtask("Subtask 2", "sub-description 2", 5);
+        Subtask subtask3 = new Subtask("Subtask 3","sub-description 3", 2);
 
-      //  int subtask2Id = manager.addNewSubtask(subtask2);
-      // int subtask3Id = manager.addNewSubtask(subtask3);
+        int subtask2Id = manager.addNewSubtask(subtask2);
+        int subtask3Id = manager.addNewSubtask(subtask3);
+        }
 
-        //System.out.println(manager.getPrioritizedTasks());
-       // Subtask subtask2 = new Subtask(4,"Subtask 1", TaskStatus.IN_PROGRESS,"sub-description 1", 2,LocalDateTime.of(2023,02,01,13,00),30);
-        // int subtask2Id = manager.addNewSubtask(subtask2);
-
-//
-//        manager.getTask(1);
-//
-//        manager.getSubtask(3);
-//        manager.getEpic(2);
-//     System.out.println(manager.getHistory());
-
-    }
-//
-//    public static void testSaving () throws ManagerSaveException {
-//        TaskManager manager = Managers.getDefaultFile();
-//        Task task1 = new Task("Task 1", "description 1");
-//        int task1Id = manager.addNewTask(task1);
-//        Epic epic1 = new Epic("Epic 1", "epic-description 1");
-//        int epic1Id = manager.addNewEpic(epic1);
-//
-//        Task task2 = new Task("Task 2", "description 2");
-//        int task2Id = manager.addNewTask(task2);
-//        task1.setStatus(TaskStatus.NEW);
-//        task2.setStatus(TaskStatus.IN_PROGRESS);
-//
-//        manager.getTask(1);
-//        manager.getTask(3);
-//
-//        Subtask subtask1 = new Subtask("Subtask 1", "sub-description 1", 2);
-//        int subtask1Id = manager.addNewSubtask(subtask1);
-//
-//        Epic epic2 = new Epic("Epic 2", "epic-description 2");
-//        int epic2Id = manager.addNewEpic(epic2);
-//
-//
-//        Subtask subtask2 = new Subtask("Subtask 2", "sub-description 2", 5);
-//        Subtask subtask3 = new Subtask("Subtask 3","sub-description 3", 2);
-//
-//        int subtask2Id = manager.addNewSubtask(subtask2);
-//        int subtask3Id = manager.addNewSubtask(subtask3);
-//        }
-//
     public static void testLoading(File file) throws IOException, ManagerSaveException {
 
         FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile(file);

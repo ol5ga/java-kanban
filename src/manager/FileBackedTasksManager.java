@@ -16,39 +16,49 @@ public class FileBackedTasksManager  extends InMemoryTaskManager{
 
 
    public static FileBackedTasksManager loadFromFile(File file) throws IOException, ManagerSaveException {
-        final FileBackedTasksManager taskManager = new FileBackedTasksManager(file);
-        FileReader reader = new FileReader(file);
-        BufferedReader readFile = new BufferedReader(reader);
-        List <String> lines = new ArrayList<>();
-        int getId = 0;
+       final FileBackedTasksManager taskManager = new FileBackedTasksManager(file);
+       FileReader reader = new FileReader(file);
+       BufferedReader readFile = new BufferedReader(reader);
+       List<String> lines = new ArrayList<>();
+       int getId = 0;
 
-        while(readFile.ready()){
-         String line = readFile.readLine();
-            lines.add(line);
-        }
+       while (readFile.ready()) {
+           String line = readFile.readLine();
+           lines.add(line);
+       }
 
-        for (int i=1; i<lines.size()-2; i++){
-            String taskLine = lines.get(i);
-            Task task = CSVTaskFormat.fromString(taskLine);
-            if (task.getType().equals(TaskType.TASK)) {
-                taskManager.tasks.put(task.getId(), task);
-            } else if(task.getType().equals(TaskType.EPIC)){
-                Epic epic = (Epic)task;
-                taskManager.epics.put(task.getId(), epic);
-            } else {
-                taskManager.subtasks.put(task.getId(), (Subtask)task);
+       for (int i = 1; i < lines.size() - 2; i++) {
+           String taskLine = lines.get(i);
+           Task task = CSVTaskFormat.fromString(taskLine);
+           if (task.getType().equals(TaskType.TASK)) {
+               taskManager.tasks.put(task.getId(), task);
+           } else if (task.getType().equals(TaskType.EPIC)) {
+               Epic epic = (Epic) task;
+               taskManager.epics.put(task.getId(), epic);
+           } else {
+               taskManager.subtasks.put(task.getId(), (Subtask) task);
+           }
+           if (task.getId() > getId) {
+               getId = task.getId();
+           }
+       }
+       if (lines.size() >= 2 ) {
+           String historyLine = lines.get(lines.size() - 1);
+           try {
+               List<Integer> historyIds = CSVTaskFormat.historyFromString(historyLine);
+                for (Integer id : historyIds) {
+               Task task = taskManager.findTask(id);
+               taskManager.historyManager.addTask(task);
+                }
+            }catch (NullPointerException exp){
+               System.out.println("История пуста");
             }
-            if (task.getId() > getId){
-                getId = task.getId();
-            }
-        }
-        String historyLine = lines.get(lines.size()-1);
-       List<Integer> historyIds = CSVTaskFormat.historyFromString(historyLine);
-       for (Integer id : historyIds) {
-           Task task = taskManager.findTask(id);
-           taskManager.historyManager.addTask(task);
-       } return taskManager;
-    }
+       } else {
+           System.out.println("История пуста");
+       }
+
+       return taskManager;
+   }
     protected void save() throws ManagerSaveException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))){
            writer.write("id,type,name,status,description,localtime,duration,epic\n");
@@ -135,7 +145,8 @@ public class FileBackedTasksManager  extends InMemoryTaskManager{
     }
 
     @Override
-    public Epic getEpic(int id) throws ManagerSaveException {
+    public Epic getEpic(int id) throws ManagerSaveException  {
+        try{
         Epic epic = super.getEpic(id);
         List<Subtask> subtasks = super.getEpicSubtasks(id);
         ArrayList<Integer> subId = new ArrayList<>();
@@ -146,6 +157,10 @@ public class FileBackedTasksManager  extends InMemoryTaskManager{
         epic.setSubtaskIds(subId);
         save();
         return epic;
+        } catch (NullPointerException exp) {
+            System.out.println("Такой задачи не существует");
+            return null;
+        }
     }
 
     @Override

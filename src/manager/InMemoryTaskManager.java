@@ -3,10 +3,8 @@ package manager;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.Comparator;
-import tasks.Epic;
-import tasks.Task;
-import tasks.Subtask;
-import tasks.TaskStatus;
+
+import tasks.*;
 
 public class InMemoryTaskManager implements TaskManager {
     protected HashMap<Integer, Task> tasks = new HashMap<>();
@@ -41,21 +39,33 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTask(int id) throws ManagerSaveException {
-        Task idTask = tasks.get(id);
-        historyManager.addTask(idTask);
-        return idTask;
+        try{
+            Task idTask = tasks.get(id);
+            historyManager.addTask(idTask);
+            return idTask;
+        } catch (NullPointerException exp){
+            System.out.println("Такой задачи не существует");
+            return null;
+        }
+
+
     }
+
     @Override
     public int addNewTask(Task task) throws ManagerSaveException {
-        final int id = ++getId;
-        try {
-            task.setId(id);
-            checkTime(task);
-            tasks.put(id,task);
-            prioritizedTasks.add(task);
-            return id;
-        } catch (ManagerSaveException exp){
-            System.out.println(exp.getMessage());
+        if (task.getType() == TaskType.TASK) {
+            final int id = ++getId;
+            try {
+                task.setId(id);
+                checkTime(task);
+                tasks.put(id, task);
+                prioritizedTasks.add(task);
+                return id;
+            } catch (ManagerSaveException exp) {
+                System.out.println(exp.getMessage());
+                return 0;
+            }
+        } else{
             return 0;
         }
     }
@@ -116,26 +126,30 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic getEpic(int id)  throws ManagerSaveException {
-        Epic idEpic = epics.get(id);
-        historyManager.addTask(idEpic);
-        return idEpic;
+        try{
+            Epic idEpic = epics.get(id);
+            historyManager.addTask(idEpic);
+            return idEpic;
+        } catch (NullPointerException exp){
+            System.out.println("Такой задачи не существует");
+            return null;
+        }
     }
 
     @Override
     public int addNewEpic(Epic epic) throws ManagerSaveException  {
-        final int id = ++getId;
-        try {
-            epic.setId(id);
-            checkTime(epic);
-            epics.put(id,epic);
-            updateEpicTime(epic);
-            return id;
-        } catch (ManagerSaveException exp){
-            System.out.println(exp.getMessage());
-            return 0;
-        }
-
-    }
+            final int id = ++getId;
+            try {
+                epic.setId(id);
+                checkTime(epic);
+                epics.put(id, epic);
+                updateEpicTime(epic);
+                return id;
+            } catch (ManagerSaveException exp) {
+                System.out.println(exp.getMessage());
+                return 0;
+            }
+     }
     @Override
     public void updateEpic(Epic updateEpic)  throws ManagerSaveException {
         Epic epic = epics.get(updateEpic.getId());
@@ -260,13 +274,18 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask getSubtask(int id)  throws ManagerSaveException {
-        Subtask idSubtask = subtasks.get(id);
         try {
-        historyManager.addTask(idSubtask);
+            Subtask idSubtask = subtasks.get(id);
+            try {
+                historyManager.addTask(idSubtask);
+            } catch (NullPointerException exp) {
+                System.out.println("История пуста");
+            }
+            return idSubtask;
         } catch (NullPointerException exp) {
-            System.out.println("История пуста");
+            System.out.println("Такой задачи не существует");
+            return null;
         }
-        return idSubtask;
     }
 
 
@@ -280,7 +299,6 @@ public class InMemoryTaskManager implements TaskManager {
             subtask.setEpicId(0);
         } else {
             try {
-
                 checkTime(subtask);
                 subtask.setId(id);
                 subtasks.put(id,subtask);

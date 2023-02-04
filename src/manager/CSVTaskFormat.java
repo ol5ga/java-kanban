@@ -59,12 +59,14 @@ public class CSVTaskFormat {
     }
 
     public static List<Integer> historyFromString(String value) throws ManagerSaveException {
-        final String[] historyId = value.split(",");
-        final List<Integer> history = new ArrayList<>();
-        for (int i = 0; i < historyId.length; i++) {
-            int id = Integer.parseInt(historyId[i]);
-            history.add(id);
-        } return history;
-
+        if (!value.isBlank()) {
+            final String[] historyId = value.split(",");
+            final List<Integer> history = new ArrayList<>();
+            for (int i = 0; i < historyId.length; i++) {
+                int id = Integer.parseInt(historyId[i]);
+                history.add(id);
+            }
+            return history;
+        } else {return null;}
     }
 }

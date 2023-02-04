@@ -2,7 +2,6 @@ package history;
 
 import manager.HistoryManager;
 import manager.InMemoryHistoryManager;
-import manager.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.*;
@@ -10,8 +9,7 @@ import tasks.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryHistoryManagerTest {
     protected Task task;
@@ -19,7 +17,6 @@ public class InMemoryHistoryManagerTest {
     protected Epic epic;
     protected Subtask subtask;
     HistoryManager historyManager;
-
     @BeforeEach
     void setUp(){
     historyManager = new InMemoryHistoryManager();
@@ -32,41 +29,82 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     void getHistory(){
-        assertNotNull(historyManager.getHistory(), "История пуста");
+
+        assertTrue(historyManager.getHistory().isEmpty(), "История не пуста");
+        historyManager.addTask(task);
+        assertFalse(historyManager.getHistory().isEmpty(), "История пуста");
+
     }
 
     @Test
     void add(){
         historyManager.addTask(task);
-        final List<Task> history = historyManager.getHistory();
-        assertNotNull(history, "История не пустая.");
-        assertEquals(1, history.size(), "История не пустая.");
-    }
+        List<Task> history = historyManager.getHistory();
+        assertEquals(1, history.size(), "Размер истории не правильный");
 
-    @Test
-    void addTwice(){
-        historyManager.addTask(task);
         historyManager.addTask(task2);
-        final List<Task> history = historyManager.getHistory();
-        assertNotNull(history, "История не пустая.");
+        history = historyManager.getHistory();
         assertEquals(2, history.size(), "Количество задач не совпадает");
     }
+
 
     @Test
     void addDifferentTask(){
         historyManager.addTask(task);
         historyManager.addTask(epic);
         final List<Task> history = historyManager.getHistory();
-        assertNotNull(history, "История не пустая.");
         assertEquals(2, history.size(), "Количество задач не совпадает");
     }
 
     @Test
-    void remove(){
+    void addRepeat(){
         historyManager.addTask(task);
         historyManager.addTask(epic);
+        historyManager.addTask(subtask);
+        List<Task> history = historyManager.getHistory();
+        int historySize = history.size();
+        historyManager.addTask(task);
+        history = historyManager.getHistory();
+        assertEquals(historySize, history.size(), "Количество задач не совпадает");
+        assertNotEquals(task, history.get(0),"Дублирование работает неверно");
+    }
+
+    @Test
+    void removeFirst(){
+        historyManager.addTask(task);
+        historyManager.addTask(epic);
+        historyManager.addTask(subtask);
+        List<Task> history = historyManager.getHistory();
+        int historySize = history.size();
         historyManager.remove(1);
-        final List<Task> history = historyManager.getHistory();
-        assertEquals(1, history.size(), "Количество задач не совпадает");
+        history = historyManager.getHistory();
+        assertEquals(historySize -1, history.size(), "Количество задач не совпадает");
+        assertNotEquals(task, history.get(0),"Первая задача не удалена");
+    }
+
+    @Test
+    void removeMiddle(){
+        historyManager.addTask(task);
+        historyManager.addTask(epic);
+        historyManager.addTask(subtask);
+        List<Task> history = historyManager.getHistory();
+        int historySize = history.size();
+        historyManager.remove(2);
+        history = historyManager.getHistory();
+        assertEquals(historySize -1, history.size(), "Количество задач не совпадает");
+        assertNotEquals(epic, history.get(1),"Задача в середине истории не удалена");
+
+    }
+    @Test
+    void removeLast(){
+        historyManager.addTask(task);
+        historyManager.addTask(epic);
+        historyManager.addTask(subtask);
+        List<Task> history = historyManager.getHistory();
+        int historySize = history.size();
+        historyManager.remove(3);
+        history = historyManager.getHistory();
+        assertEquals(historySize -1, history.size(), "Количество задач не совпадает");
+
     }
 }
