@@ -14,9 +14,28 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public class Main {
 
     public static void main(String[] args) throws ManagerSaveException, IOException {
-        TaskManager manager = Managers.getDefaultFile();
+        TaskManager manager = Managers.getDefault();
        File file = new File("resources/emptyTest.csv");
+        Task task1 = new Task("Task 1", "description 1", LocalDateTime.of(2023,02,07,10,00),30);
+        int task1Id = manager.addNewTask(task1);
 
+        Task task2 = new Task("Task 2", "description 2", LocalDateTime.of(2023,02,07,11,00),15);
+        int task2Id = manager.addNewTask(task2);
+
+        Task task3 = new Task("Task 3", "description 3", LocalDateTime.of(2023,02,07,9,50),15);
+        int task3Id = manager.addNewTask(task3);
+
+        Task task4 = new Task("Task 4", "description 4");
+        int task4Id = manager.addNewTask(task4);
+
+        Task task5 = new Task("Task 5", "description 5");
+        int task5Id = manager.addNewTask(task5);
+
+//        System.out.println(task3.getStartTime().isAfter(task1.getStartTime()));
+//        System.out.println(task3.getStartTime().isBefore(task1.getEndTime()));
+//        System.out.println(task3.getEndTime().isBefore(task1.getStartTime()));
+//        System.out.println(task3.getEndTime().isAfter(task1.getEndTime()));
+        System.out.println(manager.getPrioritizedTasks());
     }
 
     public static void testSaving () throws ManagerSaveException {

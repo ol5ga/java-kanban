@@ -22,7 +22,7 @@ public class Epic extends Task {
     }
 
     public Epic(int id, String name, String description) {
-        super(id, name, description, LocalDateTime.now(), 0);
+        super(id, name, description, null, 0);
         this.status = TaskStatus.NEW;
         this.type = TaskType.EPIC;
     }
@@ -53,9 +53,7 @@ public class Epic extends Task {
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
+
     @Override
     public LocalDateTime getEndTime(){
         return endTime;

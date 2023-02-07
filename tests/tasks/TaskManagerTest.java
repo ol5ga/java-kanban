@@ -2,6 +2,7 @@ package tasks;
 
 import manager.ManagerSaveException;
 import manager.TaskManager;
+import manager.TimeCheckException;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -312,8 +313,7 @@ public abstract class TaskManagerTest <T extends TaskManager> {
     @Test
     void checkTime() throws ManagerSaveException {
         Task task2 = new Task("Task 2", "description 2", LocalDateTime.of(2023,01,28,22,40),25);
-        int task2Id = taskManager.addNewTask(task2);
-        assertEquals(2,taskManager.getPrioritizedTasks().size() ,"Добавлена пересекающаяся задача");
+        assertThrowsExactly(TimeCheckException.class, ()->taskManager.addNewTask(task2));
     }
 
 

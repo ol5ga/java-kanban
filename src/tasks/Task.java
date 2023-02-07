@@ -38,6 +38,16 @@ public class Task {
         this.duration = duration;
     }
 
+    public Task (int id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.status = TaskStatus.NEW;
+        this.description = description;
+        this.type = TaskType.TASK;
+        this.startTime = null;
+        this.duration = 0;
+    }
+
     public Task (int id, String name, TaskStatus status, String description, LocalDateTime startTime, int duration) {
         this.id = id;
         this.name = name;
@@ -46,6 +56,16 @@ public class Task {
         this.type = TaskType.TASK;
         this.startTime = startTime;
         this.duration = duration;
+    }
+
+    public Task (int id, String name, TaskStatus status, String description) {
+        this.id = id;
+        this.name = name;
+        this.status = status;
+        this.description = description;
+        this.type = TaskType.TASK;
+        this.startTime = null;
+        this.duration = 0;
     }
 
     public void setId(int id) {
@@ -79,6 +99,10 @@ public class Task {
 
     public String getDescription() {
         return description;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     @Override
