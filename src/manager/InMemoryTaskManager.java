@@ -364,7 +364,7 @@ public class InMemoryTaskManager implements TaskManager {
         LocalDateTime endTime = startTime.plusMinutes(task.getDuration());
         if (!prioritizedTasks.isEmpty()) {
             for (Task taskTree : prioritizedTasks) {
-              if (startTime.isAfter(taskTree.getStartTime()) && startTime.isBefore(taskTree.getEndTime()) || endTime.isBefore(taskTree.getStartTime()) && endTime.isAfter(taskTree.getEndTime())) {
+              if (startTime.isAfter(taskTree.getStartTime()) && startTime.isBefore(taskTree.getEndTime()) || endTime.isAfter(taskTree.getStartTime()) && endTime.isBefore(taskTree.getEndTime())) {
                         throw new TimeCheckException("Задачи нельзя выполнять одновременно");
                     }
                 }
