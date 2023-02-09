@@ -16,30 +16,29 @@ public class Main {
     public static void main(String[] args) throws ManagerSaveException, IOException {
         TaskManager manager = Managers.getDefault();
        File file = new File("resources/emptyTest.csv");
-        Task task1 = new Task("Task 1", "description 1", LocalDateTime.of(2023,02,07,10,00),30);
-        int task1Id = manager.addNewTask(task1);
 
-        Task task2 = new Task("Task 2", "description 2", LocalDateTime.of(2023,02,07,11,00),15);
+        Task task1 = new Task("Task 1", "description 1");
+        int task1Id = manager.addNewTask(task1);
+        Epic epic1 = new Epic("Epic 1", "epic-description 1");
+        int epic1Id = manager.addNewEpic(epic1);
+
+        Task task2 = new Task("Task 2", "description 2");
         int task2Id = manager.addNewTask(task2);
 
-        Task task3 = new Task("Task 3", "description 3", LocalDateTime.of(2023,02,07,12,50),15);
-        int task3Id = manager.addNewTask(task3);
+        manager.getTask(3);
+        manager.getTask(1);
 
-        Task task3N = new Task(3,"Task 3", "description 3", LocalDateTime.of(2023,02,07,9,50),15);
+        manager.getEpic(2);
 
 
-       manager.deleteTask(1);
-        Task task4 = new Task("Task 4", "description 4");
-        int task4Id = manager.addNewTask(task4);
+        System.out.println(manager.getHistory());
+        System.out.println(manager.getAllEpics());
+        System.out.println(manager.getHistory());
+        manager.deleteEpic(2);
+        manager.deleteAllTasks();
+        System.out.println(manager.getHistory());
 
-        Task task5 = new Task("Task 5", "description 5");
-        int task5Id = manager.addNewTask(task5);
 
-//        System.out.println(task3.getStartTime().isAfter(task1.getStartTime()));
-//        System.out.println(task3.getStartTime().isBefore(task1.getEndTime()));
-//        System.out.println(task3.getEndTime().isBefore(task1.getStartTime()));
-//        System.out.println(task3.getEndTime().isAfter(task1.getEndTime()));
-        System.out.println(manager.getPrioritizedTasks());
     }
 
     public static void testSaving () throws ManagerSaveException {

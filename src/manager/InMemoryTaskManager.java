@@ -109,13 +109,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllEpics() throws ManagerSaveException {
-       try {
-            for (Epic epic : epics.values()) {
-                prioritizedTasks.remove(epic);
+        for (Epic epic : epics.values()) {
+            if(historyManager != null) {
                 historyManager.remove(epic.getId());
             }
-        } catch (NullPointerException exp) {
-            System.out.println("История пуста");
         }
         epics.clear();
         deleteAllSubtasks();
@@ -146,9 +143,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateEpic(Epic updateEpic)  throws ManagerSaveException {
         Epic epic = epics.get(updateEpic.getId());
         if (!updateEpic.equals(epic)) {
-            prioritizedTasks.remove(epic);
-            checkTime(updateEpic);
-            prioritizedTasks.add(updateEpic);
            updateEpicTime(epic);
            epics.put(updateEpic.getId(), updateEpic);
         }
@@ -163,7 +157,6 @@ public class InMemoryTaskManager implements TaskManager {
             epicsSubs.add(subId);
         }
         for (Integer subId : epicsSubs) {
-            prioritizedTasks.remove(subs.get(subId));
             deleteSubtask(subId);
         }
         try {
@@ -203,8 +196,8 @@ public class InMemoryTaskManager implements TaskManager {
         LocalDateTime startTime;
         LocalDateTime endTime;
         if (subs.isEmpty()){
-            startTime = LocalDateTime.now();
-            endTime = startTime;
+            startTime = null;
+            endTime = null;
         } else {
             startTime = getSubtask(subs.get(0)).getStartTime();
             endTime = getSubtask(subs.get(0)).getStartTime();
@@ -334,10 +327,8 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             Subtask deletedSubtask = getSubtask(id);
             Epic subEpic = epics.get(deletedSubtask.getEpicId());
-
             historyManager.remove(id);
             subEpic.removeSubtask(id);
-
             prioritizedTasks.remove(subtasks.get(id));
             subtasks.remove(id);
             updateEpicStatus(subEpic);

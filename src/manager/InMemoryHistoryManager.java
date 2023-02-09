@@ -59,7 +59,6 @@ public class InMemoryHistoryManager implements HistoryManager{
             System.out.println("История пуста");
             head = null;
             tail = null;
-            removedNode.setTask(null);
         } else {
             if (removedNode == head){
                 head = removedNode.getNext();
