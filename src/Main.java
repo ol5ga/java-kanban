@@ -22,9 +22,13 @@ public class Main {
         Task task2 = new Task("Task 2", "description 2", LocalDateTime.of(2023,02,07,11,00),15);
         int task2Id = manager.addNewTask(task2);
 
-        Task task3 = new Task("Task 3", "description 3", LocalDateTime.of(2023,02,07,9,50),15);
+        Task task3 = new Task("Task 3", "description 3", LocalDateTime.of(2023,02,07,12,50),15);
         int task3Id = manager.addNewTask(task3);
 
+        Task task3N = new Task(3,"Task 3", "description 3", LocalDateTime.of(2023,02,07,9,50),15);
+
+
+       manager.deleteTask(1);
         Task task4 = new Task("Task 4", "description 4");
         int task4Id = manager.addNewTask(task4);
 

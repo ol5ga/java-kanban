@@ -29,11 +29,13 @@ public class InMemoryTaskManager implements TaskManager {
         for (Task task : tasks.values()) {
             try {
                 historyManager.remove(task.getId());
+                prioritizedTasks.remove(task);
             } catch (NullPointerException exp) {
                 System.out.println("История пуста");
             }
 
         }
+
         tasks.clear();
     }
 
@@ -68,19 +70,18 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task updateTask) throws ManagerSaveException {
         Task task = tasks.get(updateTask.getId());
-            if (!updateTask.equals(task)) {
-                try {
-                    checkTime(updateTask);
-                    tasks.put(updateTask.getId(), updateTask);
-            } catch (ManagerSaveException exp) {
-                    System.out.println(exp.getMessage());
-                }
+        if (!updateTask.equals(task)) {
+            prioritizedTasks.remove(task);
+            checkTime(updateTask);
+            prioritizedTasks.add(updateTask);
+            tasks.put(updateTask.getId(), updateTask);
         }
     }
 
     @Override
     public void deleteTask(int id) throws ManagerSaveException,NullPointerException {
         try {
+            prioritizedTasks.remove(tasks.get(id));
             tasks.remove(id);
             if (historyManager.getHistory() != null) {
                 historyManager.remove(id);
@@ -110,6 +111,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteAllEpics() throws ManagerSaveException {
        try {
             for (Epic epic : epics.values()) {
+                prioritizedTasks.remove(epic);
                 historyManager.remove(epic.getId());
             }
         } catch (NullPointerException exp) {
@@ -144,6 +146,9 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateEpic(Epic updateEpic)  throws ManagerSaveException {
         Epic epic = epics.get(updateEpic.getId());
         if (!updateEpic.equals(epic)) {
+            prioritizedTasks.remove(epic);
+            checkTime(updateEpic);
+            prioritizedTasks.add(updateEpic);
            updateEpicTime(epic);
            epics.put(updateEpic.getId(), updateEpic);
         }
@@ -158,6 +163,7 @@ public class InMemoryTaskManager implements TaskManager {
             epicsSubs.add(subId);
         }
         for (Integer subId : epicsSubs) {
+            prioritizedTasks.remove(subs.get(subId));
             deleteSubtask(subId);
         }
         try {
@@ -165,6 +171,7 @@ public class InMemoryTaskManager implements TaskManager {
         } catch (NullPointerException exp) {
             System.out.println("История пуста");
         }
+        prioritizedTasks.remove(epic);
         epics.remove(id);
 
     }
@@ -248,6 +255,7 @@ public class InMemoryTaskManager implements TaskManager {
         for (Subtask subtask : subtasks.values()) {
             try {
                 historyManager.remove(subtask.getId());
+                prioritizedTasks.remove(subtask);
             } catch (NullPointerException exp) {
                 System.out.println("История пуста");
             }
@@ -302,7 +310,9 @@ public class InMemoryTaskManager implements TaskManager {
         Subtask subtask = subtasks.get(updateSubtask.getId());
             if (!updateSubtask.equals(subtask)) {
               try {
+                  prioritizedTasks.remove(subtask);
                   checkTime(updateSubtask);
+                  prioritizedTasks.add(updateSubtask);
                   subtasks.put(updateSubtask.getId(), updateSubtask);
                   Epic subEpic = epics.get(updateSubtask.getEpicId());
                   updateEpicStatus(subEpic);
@@ -328,7 +338,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.remove(id);
             subEpic.removeSubtask(id);
 
-
+            prioritizedTasks.remove(subtasks.get(id));
             subtasks.remove(id);
             updateEpicStatus(subEpic);
             updateEpicTime(subEpic);
