@@ -1,6 +1,6 @@
-id,type,name,status,description,localtime,duration,epic
+id,type,name,status,description,localtime,duration,epic(endTime)
 1,TASK,Task 1,NEW,description 1,2023-01-28T22:30,15
-2,EPIC,Epic 1,NEW,epic-description 1,2023-01-31T13:25,25
+2,EPIC,Epic 1,NEW,epic-description 1,2023-01-31T13:25,25,null
 3,SUBTASK,Subtask 1,NEW,sub-description 1,2023-01-31T13:25,25,2
 
 3,1

@@ -32,11 +32,13 @@ public class FileBackedTasksManager  extends InMemoryTaskManager{
            Task task = CSVTaskFormat.fromString(taskLine);
            if (task.getType().equals(TaskType.TASK)) {
                taskManager.tasks.put(task.getId(), task);
+               taskManager.prioritizedTasks.add(task);
            } else if (task.getType().equals(TaskType.EPIC)) {
                Epic epic = (Epic) task;
                taskManager.epics.put(task.getId(), epic);
            } else {
                taskManager.subtasks.put(task.getId(), (Subtask) task);
+               taskManager.prioritizedTasks.add(task);
            }
            if (task.getId() > getId) {
                getId = task.getId();
@@ -61,7 +63,7 @@ public class FileBackedTasksManager  extends InMemoryTaskManager{
    }
     protected void save() throws ManagerSaveException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))){
-           writer.write("id,type,name,status,description,localtime,duration,epic\n");
+           writer.write("id,type,name,status,description,localtime,duration,epic(endTime)\n");
             for (Task task : tasks.values()) {
                String str = CSVTaskFormat.toString(task);
                 writer.write(str + "\n");

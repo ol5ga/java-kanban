@@ -17,39 +17,22 @@ public class Main {
         TaskManager manager = Managers.getDefault();
        File file = new File("resources/emptyTest.csv");
 
-        Task task1 = new Task("Task 1", "description 1");
-        int task1Id = manager.addNewTask(task1);
-        Epic epic1 = new Epic("Epic 1", "epic-description 1");
-        int epic1Id = manager.addNewEpic(epic1);
-
-        Task task2 = new Task("Task 2", "description 2");
-        int task2Id = manager.addNewTask(task2);
-
-        manager.getTask(3);
-        manager.getTask(1);
-
-        manager.getEpic(2);
-
-
-        System.out.println(manager.getHistory());
-        System.out.println(manager.getAllEpics());
-        System.out.println(manager.getHistory());
-        manager.deleteEpic(2);
-        manager.deleteAllTasks();
-        System.out.println(manager.getHistory());
-
-
     }
 
     public static void testSaving () throws ManagerSaveException {
         TaskManager manager = Managers.getDefaultFile();
-        Task task1 = new Task("Task 1", "description 1");
+        Task task1 = new Task("Task 1", "description 1",LocalDateTime.now(),15);
         int task1Id = manager.addNewTask(task1);
         Epic epic1 = new Epic("Epic 1", "epic-description 1");
         int epic1Id = manager.addNewEpic(epic1);
 
-        Task task2 = new Task("Task 2", "description 2");
+        Task task2 = new Task("Task 2", "description 2", LocalDateTime.of(2023,2,8,20,00),30);
         int task2Id = manager.addNewTask(task2);
+
+        Task task1N = new Task(1,"Task 1", "description 1",LocalDateTime.of(2023,2,8,19,45),30);
+
+        System.out.println(manager.getPrioritizedTasks());
+
         task1.setStatus(TaskStatus.NEW);
         task2.setStatus(TaskStatus.IN_PROGRESS);
 

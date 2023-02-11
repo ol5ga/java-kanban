@@ -194,7 +194,7 @@ public abstract class TaskManagerTest <T extends TaskManager> {
     void addNewSubtask() throws ManagerSaveException  {
         Subtask addSubtask = new Subtask("Subtask 2", "description 2",1, LocalDateTime.of(2023,02,02,12,00),25);
         int id = emptyManager.addNewSubtask(addSubtask);
-        assertEquals(0, id, "Нельзя создать подзадачу без эпика");
+        assertTrue( emptyManager.getAllSubtasks().isEmpty(), "Нельзя создать подзадачу без эпика");
 
         Epic addEpic = new Epic("Epic 2", "epic-description 2");
         addSubtask = new Subtask("Subtask 2", "description 2",2, LocalDateTime.of(2023,02,02,12,30),25);

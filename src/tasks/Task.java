@@ -101,6 +101,7 @@ public class Task {
         return description;
     }
 
+
     public void setDuration(int duration) {
         this.duration = duration;
     }
@@ -115,7 +116,7 @@ public class Task {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, status, description);
+        return Objects.hash(id, name, status, description,startTime,duration);
     }
 
     @Override

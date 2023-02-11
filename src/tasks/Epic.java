@@ -27,7 +27,7 @@ public class Epic extends Task {
         this.type = TaskType.EPIC;
     }
 
-    public Epic(int id, String name,TaskStatus status, String description, LocalDateTime time, int duration) {
+    public Epic(int id, String name,TaskStatus status, String description, LocalDateTime time, int duration, LocalDateTime endTime) {
         super(id, name, status, description, time, duration);
         this.type = TaskType.EPIC;
 
@@ -79,11 +79,11 @@ public class Epic extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Epic epic = (Epic) o;
-        return Objects.equals(subtaskIds, epic.subtaskIds);
+        return Objects.equals(subtaskIds, epic.subtaskIds) && endTime.isEqual(epic.endTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), subtaskIds);
+        return Objects.hash(super.hashCode(), subtaskIds, endTime);
     }
 }

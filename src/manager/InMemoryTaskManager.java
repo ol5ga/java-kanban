@@ -71,8 +71,8 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateTask(Task updateTask) throws ManagerSaveException {
         Task task = tasks.get(updateTask.getId());
         if (!updateTask.equals(task)) {
-            prioritizedTasks.remove(task);
             checkTime(updateTask);
+            prioritizedTasks.remove(task);
             prioritizedTasks.add(updateTask);
             tasks.put(updateTask.getId(), updateTask);
         }
@@ -276,12 +276,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public int addNewSubtask(Subtask subtask) throws ManagerSaveException  {
-        final int id = ++getId;
-        int idCatch=0;
+        int id = ++getId;
         Epic subEpic = epics.get(subtask.getEpicId());
         if (subEpic == null){
             System.out.println("Такого эпика не существует");
             subtask.setEpicId(0);
+            id = 0;
         } else {
             checkTime(subtask);
             subtask.setId(id);
@@ -291,8 +291,8 @@ public class InMemoryTaskManager implements TaskManager {
             updateEpicStatus(subEpic);
             updateEpicTime(subEpic);
             updateEpicDuration(subEpic);
-            idCatch = id;
-        } return idCatch;
+
+        } return id;
 
     }
 
@@ -303,8 +303,8 @@ public class InMemoryTaskManager implements TaskManager {
         Subtask subtask = subtasks.get(updateSubtask.getId());
             if (!updateSubtask.equals(subtask)) {
               try {
-                  prioritizedTasks.remove(subtask);
                   checkTime(updateSubtask);
+                  prioritizedTasks.remove(subtask);
                   prioritizedTasks.add(updateSubtask);
                   subtasks.put(updateSubtask.getId(), updateSubtask);
                   Epic subEpic = epics.get(updateSubtask.getEpicId());
@@ -365,7 +365,7 @@ public class InMemoryTaskManager implements TaskManager {
         LocalDateTime endTime = startTime.plusMinutes(task.getDuration());
         if (!prioritizedTasks.isEmpty()) {
             for (Task taskTree : prioritizedTasks) {
-              if (startTime.isAfter(taskTree.getStartTime()) && startTime.isBefore(taskTree.getEndTime()) || endTime.isAfter(taskTree.getStartTime()) && endTime.isBefore(taskTree.getEndTime())) {
+              if (!startTime.isBefore(taskTree.getStartTime())  && startTime.isBefore(taskTree.getEndTime()) || endTime.isAfter(taskTree.getStartTime()) && endTime.isBefore(taskTree.getEndTime())){
                         throw new TimeCheckException("Задачи нельзя выполнять одновременно");
                     }
                 }
