@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import tasks.Subtask;
 import tasks.Task;
 
 import java.io.File;
@@ -59,7 +60,23 @@ public class HttpTaskServer {
                     sendText(h, response);
 
                 }
+
+                case "subtask/epic" -> {
+                    if (!h.getRequestMethod().equals("GET")) {
+                        System.out.println("Ожидается GET-запрос, а получен " + h.getRequestMethod());
+                        h.sendResponseHeaders(405, 0);
+                    }
+                    final String query = h.getRequestURI().getQuery();
+                    String idString = query.substring(3);
+                    int id = Integer.parseInt(idString);
+                    final List<Subtask> subtasks = manager.getEpicSubtasks(id);
+                    response = gson.toJson(subtasks);
+                    System.out.println("Получили подзадачи эпика id " + id);
+                    sendText(h, response);
+                }
                 case "task" -> handleTask(h);
+                case "subtask" -> handleSubtask(h);
+                case "epic" -> handleEpic(h);
 
                 default -> {
                     System.out.println("Получен неизвестный запрос " + h.getRequestMethod());
@@ -135,7 +152,13 @@ public class HttpTaskServer {
 
     }
 
+    private void handleSubtask(HttpExchange exchange){
 
+    }
+
+    private void handleEpic(HttpExchange exchange){
+
+    }
 
     protected void sendText(HttpExchange ex, String text) throws IOException{
         byte[] resp = text.getBytes(StandardCharsets.UTF_8);
