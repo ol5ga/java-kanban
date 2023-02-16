@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
+import tasks.TaskStatus;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HttpTaskServer {
@@ -180,6 +182,7 @@ public class HttpTaskServer {
                     return;
                 }
                 final Subtask subtask = gson.fromJson(json, Subtask.class);
+
                 Integer id = subtask.getId();
                 if (id != 0) {
                     manager.updateSubtask(subtask);
@@ -240,12 +243,16 @@ public class HttpTaskServer {
                     return;
                 }
                 final Epic epic = gson.fromJson(json, Epic.class);
+
                 Integer id = epic.getId();
                 if (id != 0) {
                     manager.updateEpic(epic);
                     System.out.println("Обновлена подзадача id= " + id);
                     h.sendResponseHeaders(200, 0);
                 } else {
+                    if (epic.getSubtaskId() == null){
+                        epic.setSubtaskId(new ArrayList<Integer>());
+                    }
                     manager.addNewEpic(epic);
                     System.out.println("Создана новая подзадача под id=" + id);
                     response = gson.toJson(epic);

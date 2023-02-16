@@ -193,12 +193,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateEpicTime(Epic epic) throws ManagerSaveException{
         ArrayList <Integer> subs = epic.getSubtaskId();
-        LocalDateTime startTime;
-        LocalDateTime endTime;
-        if (subs.isEmpty()){
-            startTime = null;
-            endTime = null;
-        } else {
+        LocalDateTime startTime = null;
+        LocalDateTime endTime = null;
+        if (!subs.isEmpty()){
             startTime = getSubtask(subs.get(0)).getStartTime();
             endTime = getSubtask(subs.get(0)).getStartTime();
             for (int i = 1; i < subs.size(); i++) {
