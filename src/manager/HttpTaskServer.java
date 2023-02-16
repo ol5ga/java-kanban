@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
@@ -152,12 +153,124 @@ public class HttpTaskServer {
 
     }
 
-    private void handleSubtask(HttpExchange exchange){
+    private void handleSubtask(HttpExchange h) throws IOException {
+        final String query = h.getRequestURI().getQuery();
+        String response;
+        switch (h.getRequestMethod()) {
+            case "GET" -> {
+                if (query == null) {
+                    List<Subtask> subtasks = manager.getAllSubtasks();
+                    response = gson.toJson(subtasks);
+                    System.out.println("Получили все подзадачи");
+                    sendText(h, response);
+                    return;
+                }
+                String idString = query.substring(3);
+                int id = Integer.parseInt(idString);
+                final Subtask subtask = manager.getSubtask(id);
+                response = gson.toJson(subtask);
+                System.out.println("Получили подзадачу с id " + id);
+                sendText(h, response);
+            }
+            case "POST" -> {
+                String json = readText(h);
+                if (json.isEmpty()) {
+                    System.out.println("В теле запроса должны быть данные задачи");
+                    h.sendResponseHeaders(400, 0);
+                    return;
+                }
+                final Subtask subtask = gson.fromJson(json, Subtask.class);
+                Integer id = subtask.getId();
+                if (id != 0) {
+                    manager.updateSubtask(subtask);
+                    System.out.println("Обновлена подзадача id= " + id);
+                    h.sendResponseHeaders(200, 0);
+                } else {
+                    manager.addNewSubtask(subtask);
+                    System.out.println("Создана новая подзадача под id=" + id);
+                    response = gson.toJson(subtask);
+                    sendText(h, response);
+                }
 
+            }
+            case "DELETE" -> {
+                if (query == null) {
+                    manager.deleteAllSubtasks();
+                    System.out.println("Все задачи удалены");
+                    h.sendResponseHeaders(200, 0);
+                    return;
+                }
+                String idString = query.substring(3);
+                int id = Integer.parseInt(idString);
+                manager.deleteSubtask(id);
+                System.out.println("Подзадача с id " + id + "удалена");
+                h.sendResponseHeaders(200, 0);
+            }
+            default -> {
+                System.out.println("Получен неизвестный запрос " + h.getRequestMethod());
+                h.sendResponseHeaders(404, 0);
+            }
+        }
     }
 
-    private void handleEpic(HttpExchange exchange){
+    private void handleEpic(HttpExchange h) throws IOException {
+        final String query = h.getRequestURI().getQuery();
+        String response;
+        switch (h.getRequestMethod()) {
+            case "GET" -> {
+                if (query == null) {
+                    List<Epic> epics = manager.getAllEpics();
+                    response = gson.toJson(epics);
+                    System.out.println("Получили все подзадачи");
+                    sendText(h, response);
+                    return;
+                }
+                String idString = query.substring(3);
+                int id = Integer.parseInt(idString);
+                final Epic epic = manager.getEpic(id);
+                response = gson.toJson(epic);
+                System.out.println("Получили подзадачу с id " + id);
+                sendText(h, response);
+            }
+            case "POST" -> {
+                String json = readText(h);
+                if (json.isEmpty()) {
+                    System.out.println("В теле запроса должны быть данные задачи");
+                    h.sendResponseHeaders(400, 0);
+                    return;
+                }
+                final Epic epic = gson.fromJson(json, Epic.class);
+                Integer id = epic.getId();
+                if (id != 0) {
+                    manager.updateEpic(epic);
+                    System.out.println("Обновлена подзадача id= " + id);
+                    h.sendResponseHeaders(200, 0);
+                } else {
+                    manager.addNewEpic(epic);
+                    System.out.println("Создана новая подзадача под id=" + id);
+                    response = gson.toJson(epic);
+                    sendText(h, response);
+                }
 
+            }
+            case "DELETE" -> {
+                if (query == null) {
+                    manager.deleteAllSubtasks();
+                    System.out.println("Все задачи удалены");
+                    h.sendResponseHeaders(200, 0);
+                    return;
+                }
+                String idString = query.substring(3);
+                int id = Integer.parseInt(idString);
+                manager.deleteSubtask(id);
+                System.out.println("Подзадача с id " + id + "удалена");
+                h.sendResponseHeaders(200, 0);
+            }
+            default -> {
+                System.out.println("Получен неизвестный запрос " + h.getRequestMethod());
+                h.sendResponseHeaders(404, 0);
+            }
+        }
     }
 
     protected void sendText(HttpExchange ex, String text) throws IOException{
