@@ -1,6 +1,10 @@
 package manager;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.io.File;
+import java.time.LocalDateTime;
 
 public class Managers {
     public static TaskManager getDefault(){
@@ -12,5 +16,12 @@ public class Managers {
 
     public static TaskManager getDefaultFile(){
         return new FileBackedTasksManager(new File("resources/task.csv"));
+    }
+
+    public static Gson getGson(){
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(LocalDateTime .class, new LocalDateTimeTypeAdapter());
+        Gson gson = gsonBuilder.create();
+        return gson;
     }
 }

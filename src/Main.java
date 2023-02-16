@@ -1,9 +1,11 @@
+import Http.KVServer;
 import manager.*;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 import tasks.TaskStatus;
-
+import Http.TaskHandler;
+import com.sun.net.httpserver.HttpServer;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -14,9 +16,11 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public class Main {
 
     public static void main(String[] args) throws ManagerSaveException, IOException {
-        TaskManager manager = Managers.getDefault();
-       File file = new File("resources/emptyTest.csv");
-
+       HttpTaskServer server = new HttpTaskServer();
+        KVServer kvServer = new KVServer();
+          server.start();
+        //kvServer.start();
+       // server.stop();
     }
 
     public static void testSaving () throws ManagerSaveException {
@@ -29,28 +33,28 @@ public class Main {
         Task task2 = new Task("Task 2", "description 2", LocalDateTime.of(2023,2,8,20,00),30);
         int task2Id = manager.addNewTask(task2);
 
-        Task task1N = new Task(1,"Task 1", "description 1",LocalDateTime.of(2023,2,8,19,45),30);
-
-        System.out.println(manager.getPrioritizedTasks());
-
-        task1.setStatus(TaskStatus.NEW);
-        task2.setStatus(TaskStatus.IN_PROGRESS);
-
-        manager.getTask(1);
-        manager.getTask(3);
-
-        Subtask subtask1 = new Subtask("Subtask 1", "sub-description 1", 2);
-        int subtask1Id = manager.addNewSubtask(subtask1);
-
-        Epic epic2 = new Epic("Epic 2", "epic-description 2");
-        int epic2Id = manager.addNewEpic(epic2);
-
-
-        Subtask subtask2 = new Subtask("Subtask 2", "sub-description 2", 5);
-        Subtask subtask3 = new Subtask("Subtask 3","sub-description 3", 2);
-
-        int subtask2Id = manager.addNewSubtask(subtask2);
-        int subtask3Id = manager.addNewSubtask(subtask3);
+//        Task task1N = new Task(1,"Task 1", "description 1",LocalDateTime.of(2023,2,8,19,45),30);
+//
+//        System.out.println(manager.getPrioritizedTasks());
+//
+//        task1.setStatus(TaskStatus.NEW);
+//        task2.setStatus(TaskStatus.IN_PROGRESS);
+//
+//        manager.getTask(1);
+//        manager.getTask(3);
+//
+//        Subtask subtask1 = new Subtask("Subtask 1", "sub-description 1", 2);
+//        int subtask1Id = manager.addNewSubtask(subtask1);
+//
+//        Epic epic2 = new Epic("Epic 2", "epic-description 2");
+//        int epic2Id = manager.addNewEpic(epic2);
+//
+//
+//        Subtask subtask2 = new Subtask("Subtask 2", "sub-description 2", 5);
+//        Subtask subtask3 = new Subtask("Subtask 3","sub-description 3", 2);
+//
+//        int subtask2Id = manager.addNewSubtask(subtask2);
+//        int subtask3Id = manager.addNewSubtask(subtask3);
         }
 
     public static void testLoading(File file) throws IOException, ManagerSaveException {

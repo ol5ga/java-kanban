@@ -20,11 +20,20 @@ public class Task {
         this.duration = duration;
     }
 
-    public Task (String name, String description) {
+    public Task (String name, String description, TaskStatus status, TaskType type, LocalDateTime startTime, int duration) {
         this.name = name;
         this.status = TaskStatus.NEW;
         this.description = description;
+        this.type =type;
+        this.startTime = startTime;
+        this.duration = duration;
+    }
+
+    public Task (String name, String description) {
+        this.name = name;
+        this.status = TaskStatus.NEW;
         this.type = TaskType.TASK;
+        this.description = description;
 
     }
 
