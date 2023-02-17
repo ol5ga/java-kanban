@@ -1,4 +1,6 @@
 import Http.KVServer;
+import Http.KVTaskClient;
+import com.google.gson.Gson;
 import manager.*;
 import tasks.Epic;
 import tasks.Subtask;
@@ -8,6 +10,10 @@ import Http.TaskHandler;
 import com.sun.net.httpserver.HttpServer;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,12 +21,30 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class Main {
 
-    public static void main(String[] args) throws ManagerSaveException, IOException {
+    public static void main(String[] args) throws ManagerSaveException, IOException, InterruptedException {
        HttpTaskServer server = new HttpTaskServer();
         KVServer kvServer = new KVServer();
-          server.start();
-        //kvServer.start();
-       // server.stop();
+         // server.start();
+        kvServer.start();
+        KVTaskClient client = new KVTaskClient(8078);
+        Gson gson = Managers.getGson();
+HttpClient httpClient = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8078/tasks?API_TOKEN=DEBUG");
+
+        TaskManager manager = Managers.getDefault();
+        Task task1 = new Task("Task 1", "description 1",LocalDateTime.now(),15);
+        int task1Id = manager.addNewTask(task1);
+        Task task2 = new Task("Task 2", "description 2", LocalDateTime.of(2023,2,8,20,00),30);
+        int task2Id = manager.addNewTask(task2);
+        String json = gson.toJson(manager.getAllTasks());
+        client.put("tasks",json);
+        client.load("tasks");
+
+//        HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
+//        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(body).build();
+//        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+//        System.out.println(response.body());
+         server.stop();
     }
 
     public static void testSaving () throws ManagerSaveException {

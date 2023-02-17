@@ -55,14 +55,14 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public int addNewTask(Task task) throws ManagerSaveException {
-        if (task.getType() == TaskType.TASK) {
+        if (task.getType() == TaskType.TASK || task.getType() ==null ) {
             final int id = ++getId;
                 task.setId(id);
                 checkTime(task);
                 tasks.put(id, task);
                 prioritizedTasks.add(task);
                 return id;
-        } else{
+        } else {
             return 0;
         }
     }

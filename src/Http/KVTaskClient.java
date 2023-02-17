@@ -28,6 +28,7 @@ public class KVTaskClient {
             if (response.statusCode() !=200){
                 throw new ManagerSaveException("Произошла ошибка " + response.statusCode());
             }
+            System.out.println(response.body());
             return response.body();
         } catch (IOException  |InterruptedException e) {
             throw new RuntimeException(e);
@@ -42,6 +43,7 @@ public class KVTaskClient {
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
             HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
+            System.out.println(response.body());
             if (response.statusCode() !=200){
                 throw new ManagerSaveException("Произошла ошибка " + response.statusCode());
             }
@@ -61,6 +63,7 @@ public class KVTaskClient {
             if (response.statusCode() !=200){
                 throw new ManagerSaveException("Произошла ошибка " + response.statusCode());
             }
+            System.out.println(response.body());
             return response.body();
         } catch (IOException  |InterruptedException e) {
             throw new RuntimeException(e);
