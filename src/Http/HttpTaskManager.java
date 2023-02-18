@@ -9,9 +9,7 @@ import tasks.Subtask;
 import tasks.Task;
 import tasks.TaskType;
 
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,18 +32,18 @@ public class HttpTaskManager extends FileBackedTasksManager {
         this(port,false);
     }
 
-    protected void load(){
+    public void load(){
         ArrayList<Task> tasks = gson.fromJson(client.load("tasks"), new TypeToken<ArrayList<Task>>() {
         }.getType());
-        addTasks(tasks);
+
 
         ArrayList<Epic> epics = gson.fromJson(client.load("epics"), new TypeToken<ArrayList<Epic>>() {
         }.getType());
-        addTasks(epics);
+
 
         ArrayList<Subtask> subtasks = gson.fromJson(client.load("epics"), new TypeToken<ArrayList<Subtask>>() {
         }.getType());
-        addTasks(subtasks);
+
 
         List<Integer> history = gson.fromJson(client.load("history"), new TypeToken<ArrayList<Integer>>() {
         }.getType());
@@ -68,24 +66,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
         client.put("history", jsonHistory);
     }
 
-    protected void addTasks(List<? extends Task> tasks){
-        for (Task task: tasks) {
-            final int id = task.getId();
-            if (id > getId) {
-                getId = id;
-            }
-            TaskType type = task.getType();
-            if (type == TaskType.TASK) {
-                this.tasks.put(id, task);
-                prioritizedTasks.add(task);
-            } else if (type == TaskType.SUBTASK) {
-                subtasks.put(id, (Subtask) task);
-                prioritizedTasks.add(task);
-            } else if(type == TaskType.EPIC){
-                epics.put(id, (Epic) task);
-            }
-        }
-    }
+
 }
 
 

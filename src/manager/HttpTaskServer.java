@@ -1,21 +1,16 @@
 package manager;
-import Http.TaskHandler;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
-import tasks.TaskStatus;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,14 +21,14 @@ public class HttpTaskServer {
     private final TaskManager manager;
 
 
-    public HttpTaskServer() throws IOException {
-        this(Managers.getDefaultFile());
+    public HttpTaskServer() throws IOException, InterruptedException {
+        this(Managers.getDefaultHttp());
     }
 
     public HttpTaskServer(TaskManager taskManager) throws IOException {
         this.manager = taskManager;
         server = HttpServer.create(new InetSocketAddress("localhost", PORT),0);
-        HttpContext context = server.createContext("/tasks",this::handler);//new TaskHandler(Managers.getDefaultFile())
+        HttpContext context = server.createContext("/tasks",this::handler);
         gson = Managers.getGson();
 
 
@@ -41,20 +36,20 @@ public class HttpTaskServer {
 
     public void handler(HttpExchange h){
         String response;
-        try (h) {
+        try {
             System.out.println("\n/tasks: " + h.getRequestURI());
             final String path = h.getRequestURI().getPath().substring(7);
             switch (path) {
-                case "" -> {
+                case "" :
                     if (!h.getRequestMethod().equals("GET")) {
                         System.out.println("Ожидается GET-запрос, а получен " + h.getRequestMethod());
                         h.sendResponseHeaders(405, 0);
                     }
                     response = gson.toJson(manager.getPrioritizedTasks());
                     sendText(h, response);
-                }
 
-                case "history" -> {
+                break;
+                case "history":
                     if (!h.getRequestMethod().equals("GET")) {
                         System.out.println("Ожидается GET-запрос, а получен " + h.getRequestMethod());
                         h.sendResponseHeaders(405, 0);
@@ -62,9 +57,9 @@ public class HttpTaskServer {
                     response = gson.toJson(manager.getHistory());
                     sendText(h, response);
 
-                }
+                break;
 
-                case "subtask/epic" -> {
+                case "subtask/epic":
                     if (!h.getRequestMethod().equals("GET")) {
                         System.out.println("Ожидается GET-запрос, а получен " + h.getRequestMethod());
                         h.sendResponseHeaders(405, 0);
@@ -76,20 +71,26 @@ public class HttpTaskServer {
                     response = gson.toJson(subtasks);
                     System.out.println("Получили подзадачи эпика id " + id);
                     sendText(h, response);
-                }
-                case "task" -> handleTask(h);
-                case "subtask" -> handleSubtask(h);
-                case "epic" -> handleEpic(h);
-
-                default -> {
+                break;
+                case "task":
+                    handleTask(h);
+                    break;
+                case "subtask":
+                    handleSubtask(h);
+                    break;
+                case "epic":
+                    handleEpic(h);
+                    break;
+                default:
                     System.out.println("Получен неизвестный запрос " + h.getRequestMethod());
                     h.sendResponseHeaders(404, 0);
-                }
+                    break;
+
             }
         } catch (Exception e){
             e.printStackTrace();
-
-        }
+            h.close();
+        } h.close();
     }
 
 
@@ -127,7 +128,7 @@ public class HttpTaskServer {
                     h.sendResponseHeaders(200, 0);
                 } else {
                     manager.addNewTask(task);
-                    System.out.println("Создана новая задача под id=" + id);
+                    System.out.println("Создана новая задача под id=" + task.getId());
                     response = gson.toJson(task);
                     sendText(h, response);
                 }
@@ -190,7 +191,7 @@ public class HttpTaskServer {
                     h.sendResponseHeaders(200, 0);
                 } else {
                     manager.addNewSubtask(subtask);
-                    System.out.println("Создана новая подзадача под id=" + id);
+                    System.out.println("Создана новая подзадача под id=" + subtask.getId());
                     response = gson.toJson(subtask);
                     sendText(h, response);
                 }
@@ -224,7 +225,7 @@ public class HttpTaskServer {
                 if (query == null) {
                     List<Epic> epics = manager.getAllEpics();
                     response = gson.toJson(epics);
-                    System.out.println("Получили все подзадачи");
+                    System.out.println("Получили все эпики");
                     sendText(h, response);
                     return;
                 }
@@ -232,7 +233,7 @@ public class HttpTaskServer {
                 int id = Integer.parseInt(idString);
                 final Epic epic = manager.getEpic(id);
                 response = gson.toJson(epic);
-                System.out.println("Получили подзадачу с id " + id);
+                System.out.println("Получили эпик с id " + id);
                 sendText(h, response);
             }
             case "POST" -> {
@@ -247,14 +248,14 @@ public class HttpTaskServer {
                 Integer id = epic.getId();
                 if (id != 0) {
                     manager.updateEpic(epic);
-                    System.out.println("Обновлена подзадача id= " + id);
+                    System.out.println("Обновлен эпик id= " + id);
                     h.sendResponseHeaders(200, 0);
                 } else {
                     if (epic.getSubtaskId() == null){
                         epic.setSubtaskId(new ArrayList<Integer>());
                     }
                     manager.addNewEpic(epic);
-                    System.out.println("Создана новая подзадача под id=" + id);
+                    System.out.println("Создан новый эпик под id=" + epic.getId());
                     response = gson.toJson(epic);
                     sendText(h, response);
                 }
@@ -263,14 +264,14 @@ public class HttpTaskServer {
             case "DELETE" -> {
                 if (query == null) {
                     manager.deleteAllSubtasks();
-                    System.out.println("Все задачи удалены");
+                    System.out.println("Все эпики удалены");
                     h.sendResponseHeaders(200, 0);
                     return;
                 }
                 String idString = query.substring(3);
                 int id = Integer.parseInt(idString);
                 manager.deleteSubtask(id);
-                System.out.println("Подзадача с id " + id + "удалена");
+                System.out.println("Эпик с id " + id + "удален");
                 h.sendResponseHeaders(200, 0);
             }
             default -> {
