@@ -14,75 +14,44 @@ import tasks.TaskManagerTest;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
-    KVServer kvServer;
-    Gson gson;
-    KVTaskClient client;
-    protected TaskManager taskManager;
-    protected Task task;
-    protected Subtask subtask;
-    protected Epic epic;
-
-
+    private KVServer kvServer;
 
     @BeforeEach
-    public void start() throws IOException, InterruptedException {
+    public void setUp() throws IOException, InterruptedException {
         kvServer = Managers.getDefaultKVServer();
-        client = new KVTaskClient(8078);
-        gson = Managers.getGson();
         taskManager = new HttpTaskManager(KVServer.PORT);
-//        Task task1 = new Task("Task 1", "description 1", LocalDateTime.now(),15);
-//        int task1Id = taskManager.addNewTask(task1);
+        emptyManager = new HttpTaskManager(KVServer.PORT);
         initTasks();
-
     }
 
     @AfterEach
-    public void setDown() {
+    protected void setDown(){
         kvServer.stop();
-
     }
 
     @Test
     public void load() throws IOException, InterruptedException {
-        Task task1 = new Task("Task 1", "description 1", LocalDateTime.now(),15);
-        int task1Id = taskManager.addNewTask(task1);
-        //taskManager.getTask(task.getId());
-//  taskManager.getSubtask(subtask.getId());
-//  taskManager.getEpic(epic.getId());
-//        HttpTaskManager manager = new HttpTaskManager(KVServer.PORT);
-//        String key = "tasks";
-//        HttpClient httpClient = HttpClient.newHttpClient();
-//        URI url = URI.create("http://localhost:8078/");
-//        HttpRequest request = HttpRequest.newBuilder()
-//                .uri(URI.create(url + "load/" + key + "?API_TOKEN=DEBUG"))
-//                        .GET()
-//                        .build();
-//        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-//        assertTrue(taskManager.getAllTasks().isEmpty(), "Вовращает не пустой список");
-//        assertTrue(taskManager.getPrioritizedTasks().isEmpty(),"Возвращает не пустой список");
-//        assertTrue(taskManager.getHistory().isEmpty(),"Возвращает не пустой список истории");
-
-//        Task task1 = new Task("Task 1", "description 1", LocalDateTime.now(),15);
-//        int task1Id = taskManager.addNewTask(task1);
-//        String json = gson.toJson(taskManager.getAllTasks());
-//        client.put("tasks",json);
-//        client.load("tasks");
-
-//        assertFalse(taskManager.getAllTasks().isEmpty(), "Вовращает пустой список");
-//        assertFalse(taskManager.getPrioritizedTasks().isEmpty(),"Возвращает пустой список");
-//        assertFalse(taskManager.getHistory().isEmpty(),"Возвращает пустой список истории");
-
-
-        HttpTaskManager manager2 = new HttpTaskManager(KVServer.PORT,true);
-
-     //   assertEquals(1,manager2.getAllTasks().size(), "Возвращает неверный список");
-        assertNotNull(manager2.getPrioritizedTasks(),"Возвращает пустой список");
-        assertEquals(taskManager.getHistory().size(),manager2.getHistory().size(), "Возвращает неверную историю");
+        taskManager.getTask(task.getId());
+        taskManager.getSubtask(subtask.getId());
+        taskManager.getEpic(epic.getId());
+        HttpTaskManager taskManager2 = new HttpTaskManager(KVServer.PORT, true);
+        final List<Task> tasks = taskManager2.getAllTasks();
+        assertNotNull(tasks, "Возвращает пустой список задач");
+        assertEquals(1, tasks.size(),"Возврарает неверный список задач");
+        final List<Epic> epics = taskManager.getAllEpics();
+        assertNotNull(epics, "Возвращает пустой список эпиков");
+        assertEquals(1, epics.size(), "Возвращает неверный список эпиков");
+        final List<Subtask> subtasks = taskManager.getAllSubtasks();
+        assertNotNull(subtasks, "Возвращает пустой список подчадач");
+        assertEquals(1,subtasks.size(), "Возвращает неверный список подзадач");
+        final List<Task> history = taskManager.getHistory();
+        assertNotNull(history, "Возвращает пустой список истории");
+        assertEquals(3,history.size(),"Возвращает неверный список истории");
     }
 }

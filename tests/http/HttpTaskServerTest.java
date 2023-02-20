@@ -35,17 +35,7 @@ public class HttpTaskServerTest {
     protected Subtask subtask;
     protected Epic epic;
 
-//    public HttpTaskServerTest() throws IOException, InterruptedException {
-//        kvServer = new KVServer();
-//
-//    }
 
-
-
-    @AfterEach
-    public void setDown() throws IOException {
-        kvServer.stop();
-    }
 
     @BeforeEach
     public void start() throws IOException, InterruptedException {
@@ -62,12 +52,12 @@ public class HttpTaskServerTest {
     }
 
     @AfterEach
-    public void stop() {
+    public void setDown() throws IOException {
+        kvServer.stop();
         server.stop();
     }
 
-
-    @Test
+     @Test
     void getTasks() throws IOException, InterruptedException {
             HttpClient client = HttpClient.newHttpClient();
             URI url = URI.create("http://localhost:8080/tasks/task");
