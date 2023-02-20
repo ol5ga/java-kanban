@@ -1,14 +1,10 @@
 package memory;
 
 import manager.InMemoryTaskManager;
-import manager.ManagerSaveException;
+import manager.exceptions.ManagerSaveException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tasks.Task;
 import tasks.TaskManagerTest;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

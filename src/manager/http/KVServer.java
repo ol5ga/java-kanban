@@ -1,10 +1,9 @@
-package Http;
+package manager.http;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +46,7 @@ public class KVServer {
                     return;
                 }
                sendText(h, data.get(key));
+                h.sendResponseHeaders(200,0);
                 System.out.println("Значение для ключа " + key + "успешно отправлено");
                 h.sendResponseHeaders(405,0);
             }

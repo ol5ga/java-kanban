@@ -1,8 +1,10 @@
-package manager;
+package manager.history;
+import manager.history.HistoryManager;
+import manager.history.Node;
 import tasks.Task;
 import java.util.*;
 
-public class InMemoryHistoryManager implements HistoryManager{
+public class InMemoryHistoryManager implements HistoryManager {
   private final Map<Integer, Node> nodeMap = new HashMap<>();
   private Node head;
   private Node tail;

@@ -1,5 +1,8 @@
-import Http.KVServer;
-import Http.KVTaskClient;
+import manager.exceptions.ManagerSaveException;
+import manager.file.FileBackedTasksManager;
+import manager.http.HttpTaskServer;
+import manager.http.KVServer;
+import manager.http.KVTaskClient;
 import com.google.gson.Gson;
 import manager.*;
 import tasks.Epic;
@@ -31,7 +34,7 @@ public class Main {
         HttpClient httpClient = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:8078/tasks?API_TOKEN=DEBUG");
 
-        TaskManager manager = Managers.getDefaultHttp();
+        TaskManager manager = Managers.getDefault();
         Task task1 = new Task("Task 1", "description 1",LocalDateTime.now(),15);
         int task1Id = manager.addNewTask(task1);
         Task task2 = new Task("Task 2", "description 2", LocalDateTime.of(2023,2,8,20,00),30);

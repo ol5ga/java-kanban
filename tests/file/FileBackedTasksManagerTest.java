@@ -1,8 +1,7 @@
 package file;
 
-import manager.FileBackedTasksManager;
-import manager.ManagerSaveException;
-import org.junit.jupiter.api.AfterEach;
+import manager.file.FileBackedTasksManager;
+import manager.exceptions.ManagerSaveException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;

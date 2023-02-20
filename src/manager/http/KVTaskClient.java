@@ -1,6 +1,6 @@
-package Http;
+package manager.http;
 
-import manager.ManagerSaveException;
+import manager.exceptions.ManagerSaveException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -17,7 +17,7 @@ public class KVTaskClient {
         apiToken = register(url);
     }
 
-    private String register(String url) throws IOException, InterruptedException {
+    private String register(String url) {
         try{
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
@@ -66,7 +66,7 @@ public class KVTaskClient {
             System.out.println(response.body());
             return response.body();
         } catch (IOException  |InterruptedException e) {
-            throw new RuntimeException(e);
+            throw new ManagerSaveException("Произошла ошибка " + e);
         }
     }
 }

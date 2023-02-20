@@ -1,8 +1,10 @@
-package manager;
+package manager.http;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import com.google.gson.Gson;
+import manager.Managers;
+import manager.TaskManager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
@@ -11,6 +13,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +25,7 @@ public class HttpTaskServer {
 
 
     public HttpTaskServer() throws IOException, InterruptedException {
-        this(Managers.getDefaultHttp());
+        this(Managers.getDefault());
     }
 
     public HttpTaskServer(TaskManager taskManager) throws IOException {

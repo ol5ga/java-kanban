@@ -1,8 +1,8 @@
 package tasks;
 
-import manager.ManagerSaveException;
+import manager.exceptions.ManagerSaveException;
 import manager.TaskManager;
-import manager.TimeCheckException;
+import manager.exceptions.TimeCheckException;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.List;
