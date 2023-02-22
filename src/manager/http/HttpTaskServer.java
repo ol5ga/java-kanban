@@ -19,6 +19,8 @@ import java.util.List;
 
 public class HttpTaskServer {
     public static final int PORT = 8080;
+
+    public static final String HOSTNAME = "localhost";
     private final HttpServer server;
     private final Gson gson;
     private final TaskManager manager;
@@ -30,7 +32,7 @@ public class HttpTaskServer {
 
     public HttpTaskServer(TaskManager taskManager) throws IOException {
         this.manager = taskManager;
-        server = HttpServer.create(new InetSocketAddress("localhost", PORT),0);
+        server = HttpServer.create(new InetSocketAddress(HOSTNAME, PORT),0);
         HttpContext context = server.createContext("/tasks",this::handler);
         gson = Managers.getGson();
 
@@ -92,8 +94,11 @@ public class HttpTaskServer {
             }
         } catch (Exception e){
             e.printStackTrace();
+
+        } finally {
             h.close();
-        } h.close();
+        }
+
     }
 
 
